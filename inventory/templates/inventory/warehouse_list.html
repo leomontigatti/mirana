@@ -1,0 +1,29 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block list_body %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr class="dark">
+                    <td scope="col" class="text-center">Número</td>
+                    <td scope="col">Nombre</td>
+                    <td scope="col">Domicilio</td>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for object in object_list %}
+                    <tr>
+                        <td class="text-center">{{ object.id }}</td>
+                        <td>
+                            <a href="{% url model|add:'_update' object.id %}" class="text-decoration-none">{{ object.name }}</a>
+                        </td>
+                        <td>{{ object.address }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock list_body %}

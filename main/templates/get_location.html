@@ -1,0 +1,19 @@
+{% include 'bootstrap.html' %}
+{% load static %}
+
+{% block content %}
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <div class="d-flex justify-content-center m-2">
+        <input type="hidden" name="coords" id="coords" value="{{ coords }}">
+        <div id="map" style="height: 400px; width: 100%;"></div>
+    </div>
+
+    <script async
+    src="https://maps.googleapis.com/maps/api/js?key={{ maps_api_key }}&callback=initMap">
+    </script>
+
+    <script src="{% static 'main/js/get_location.js' %}"></script>
+
+{% endblock content %}

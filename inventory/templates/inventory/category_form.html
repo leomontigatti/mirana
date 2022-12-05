@@ -1,0 +1,35 @@
+{% load static %}
+
+<div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Nueva categoría</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{% url 'category_create' %}" method="post" id="category-form">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="row gx-3">
+                        <div class="col-sm">
+                            {{ category_form.name.label_tag }}
+                            {{ category_form.name }}
+                        </div>
+                    </div>
+                    <div class="row gx-3">
+                        <div class="col-sm">
+                            {{ category_form.notes.label_tag }}
+                            {{ category_form.notes }}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary m-1" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-outline-primary m-1" form="category-form">
+                        <i class="bi bi-check2 me-2"></i>Confirmar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

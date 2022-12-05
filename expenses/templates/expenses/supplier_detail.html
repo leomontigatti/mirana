@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Proveedores
+{% endblock title %}
+
+{% block content %}
+
+    <p>{{ supplier.name }}</p>
+    <p>{{ supplier.identification_type }}</p>
+    <p>{{ supplier.identification_number }}</p>
+    <p>{{ supplier.address }}</p>
+    <p>{{ supplier.phone_number }}</p>
+
+    <a href="{% url 'supplier_list' %}" class="btn btn-outline-secondary">Volver</a>
+    <a href="{% url 'supplier_update' supplier.pk %}" class="btn btn-outline-primary">Actualizar</a>
+
+{% endblock content %}

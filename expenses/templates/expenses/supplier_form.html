@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Proveedores
+{% endblock title %}
+
+{% block content %}
+    {% include 'messages.html' %}
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <a href="{% url 'supplier_list' %}" class="btn btn-outline-secondary">Volver</a>
+            <input type="submit" class="btn btn-outline-primary" value="Guardar">
+        </form>
+{% endblock content %}

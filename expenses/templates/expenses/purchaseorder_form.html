@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Órdenes de compra
+{% endblock title %}
+
+{% block content %}
+
+    {% include 'messages.html' %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="row g-3 mb-2">
+            <div class="col">
+                {{ form.supplier.label_tag }}
+                {{ form.supplier }}
+            </div>
+            <div class="col">
+                {{ form.number.label_tag }}
+                {{ form.number }}
+            </div>
+            <div class="col">
+                {{ form.date.label_tag }}
+                {{ form.date }}
+            </div>
+        </div>
+        <div class="row g-3 mb-2">
+            {{ form.notes.label_tag }}
+            {{ form.notes }}
+        </div>
+
+        <a href="{% url 'purchaseorder_list' %}" class="btn btn-outline-secondary">Volver</a>
+        <input type="submit" class="btn btn-outline-primary" value="Guardar">
+    </form>
+{% endblock content %}

@@ -1,0 +1,93 @@
+.eye:hover .bi-eye:before {
+    content: "\F33E";
+    color: var(--bs-primary);
+}
+
+.pencil:hover .bi-pencil:before {
+    content: "\F4C9";
+    color: var(--bs-primary);
+}
+
+.geo:hover .bi-geo-alt:before {
+    content: "\F3E7";
+    color: var(--bs-primary);
+}
+
+.whatsapp {
+    color: #25D366;
+}
+
+.whatsapp:hover .bi-whatsapp:before {
+    color: var(--bs-success) !important;
+}
+
+.bi-exclamation-circle {
+    color: var(--bs-warning);
+}
+
+[readonly] {
+    background-color: var(--bs-gray-200);
+    pointer-events: none;
+}
+
+input[id*="DELETE"]:checked {
+    background: var(--bs-danger);
+    border-color: var(--bs-danger);
+    --bs-text-opacity: .5;
+}
+
+.noinput {
+    border: none;
+    font-family: inherit;
+    font-size: inherit;
+    padding: none;
+    width: auto;
+    background-color: inherit;
+}
+
+.required-field {
+    color: var(--bs-info);
+}
+
+tr.dark {
+    background-color: #212529;
+    color: #FFFFFF8C;
+}
+
+form.filters-form {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-size: .8rem;
+}
+
+form.filters-form ul {
+    list-style: none;
+    padding: 0rem;
+}
+
+form.filters-form li {
+    margin: 0rem;
+}
+
+.selected {
+    color: black !important;
+    border-left: 1rem;
+    border-color: #212529;
+    border-left-width: 1rem;
+}
+
+.selected:hover {
+    cursor: default !important;
+}
+
+form.filters-form li:hover {
+    cursor: pointer;
+    color: black !important;
+}
+
+#clear-filters:hover {
+    cursor: pointer;
+}
+
+p[name="show-all"]:hover {
+    cursor: pointer;
+}

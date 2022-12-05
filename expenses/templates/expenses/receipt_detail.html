@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Sarasa
+{% endblock title %}
+
+{% block content %}
+
+    <h1>Detalle de Comprobante</h1>
+
+
+
+        {{ receipt.contact }} --
+        {{ receipt.tipo }} --
+        {{ receipt.number }} --
+        {{ receipt.issue_date }} --
+        {{ receipt.due_date }} --
+        {{ receipt.detail }} --
+        {{ receipt.neto }} --
+        {{ receipt.iva }} --
+        {{ receipt.cai }} --
+
+
+        <a href="{% url 'receipt_update' receipt.pk %}">Actualizar</a>
+        <a href="{% url 'receipt_list' %}">Volver</a>
+
+
+
+{% endblock content %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static extra_tags %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="{% static 'main/css/calendar.css' %}">
+
+    <div class="d-flex justify-content-center my-3">
+        {{ calendar }}
+    </div>
+
+
+
+    <script>
+        const today = "{{ today }}"
+    </script>
+    <script src="{% static 'main/js/calendar.js' %}"></script>
+
+{% endblock content %}

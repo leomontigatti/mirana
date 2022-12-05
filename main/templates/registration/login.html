@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    {# Required meta tags #}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{% include 'bootstrap.html' %}
+
+{% include 'title.html' %}
+
+</head>
+
+<body class="d-flex flex-column vh-100 py-0">
+
+    {% include 'messages.html' %}
+
+    <div class="container-fluid my-auto text-center">
+
+        <link rel="stylesheet" href="{% static 'main/css/login.css' %}">
+
+        <form method="post" class="needs-validation form-signin" novalidate>
+            {% csrf_token %}
+
+            <img class="mb-4 img-fluid rounded-circle" src="{% static 'main/images/cosmos.png' %}" alt="" width="200">
+
+            <p class="h3 m-3 font-weight-normal">Acceder</p>
+
+            <label for="id_username" class="visually-hidden">Nombre de usuario</label>
+            {{ form.username }}
+            <label for="id_password" class="visually-hidden">Contraseña</label>
+            {{ form.password }}
+
+            <input type="submit" value="Acceder" class="btn btn-outline-primary m-3">
+
+        </form>
+
+    </div>
+
+    {% include 'footer.html' %}
+
+</body>

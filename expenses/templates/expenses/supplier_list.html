@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Proveedores
+{% endblock title %}
+
+{% block content %}
+
+        <h2>Lista de proveedores</h2>
+
+        <form method="get">
+            <div class="input-group mb-3">
+                <input type="text" name="search_input" class="form-control" value="{{search_input}}" placeholder="Buscar">
+                <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+            </div>
+        </form>
+
+        <p>
+            Buscar por nombre, domicilio o número de identificación
+        </p>
+
+        {% if search_input and not supplier_list %}
+            <p>No existen coincidencias para la búsqueda realizada.</p>
+        {% elif not supplier_list %}
+            <p>No existen proveedores creados. Podés empezar haciendo click <a href="{% url 'supplier_create' %}">acá</a>.</p>
+        {% else %}
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>Proveedor</th>
+                        <th>Tipo de identificacion</th>
+                        <th>Numero de identificacion</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for supplier in supplier_list %}
+                        <tr>
+                            <td>{{ supplier.name }}</td>
+                            <td>{{ supplier.identification_type }}</td>
+                            <td>{{ supplier.identification_number }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <a href="{% url 'supplier_create' %}">Nuevo proveedor</a>
+{% endblock content %}

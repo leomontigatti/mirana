@@ -1,0 +1,34 @@
+{% load extra_tags %}
+
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="fw-bold modal-title fs-5" id="createModalLabel">
+                    {% if page == "create" %}
+                        Crear
+                    {% elif page == "update" %}
+                        Modificar
+                    {% endif %}
+                    {{ model|to_spanish }}
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                Estás seguro de
+                {% if page == "create" %}
+                    crear un
+                {% elif page == "update" %}
+                    modificar el
+                {% endif %}
+                {{ model|to_spanish }}<br>con los datos ingresados?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary m-2" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-outline-primary m-2" form="{{ model }}_form">
+                    <i class="bi bi-check2 me-2"></i>Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

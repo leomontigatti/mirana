@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Órdenes de compra
+{% endblock title %}
+
+{% block content %}
+
+        <h2>Lista de órdenes de compra</h2>
+
+        <form method="get">
+            <div class="input-group mb-3">
+                <input type="text" name="search_input" class="form-control" value="{{ search_input }}" placeholder="Buscar">
+                <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+            </div>
+        </form>
+
+        <p>
+            Buscar por nombre, domicilio o número de identificación
+        </p>
+
+        {% if search_input and not purchaseorder_list %}
+            <p>No existen coincidencias para la búsqueda realizada.</p>
+        {% elif not purchaseorder_list %}
+            <p>No existen órdenes de compra creadas. Podés empezar haciendo click <a href="{% url 'purchaseorder_create' %}">acá</a>.</p>
+        {% else %}
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th>Número</th>
+                        <th>Proveedor</th>
+                        <th>Tipo de identificacion</th>
+                        <th>Numero de identificacion</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for purchaseorder in purchaseorder_list %}
+                        <tr>
+                            <td>{{ purchaseorder.id }}</td>
+                            <td>{{ purchaseorder.supplier.name }}</td>
+                            <td>{{ purchaseorder.supplier.identification_type }}</td>
+                            <td>{{ purchaseorder.supplier.identification_number }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <a href="{% url 'purchaseorder_create' %}">Nueva orden de compra</a>
+{% endblock content %}

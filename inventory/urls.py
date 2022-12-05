@@ -1,0 +1,93 @@
+from django.urls import include, path
+
+from inventory import views
+from main.views import get_location
+
+urlpatterns = [
+    path(
+        "category/",
+        include(
+            [
+                path(
+                    "create", views.CategoryCreateView.as_view(), name="category_create"
+                ),
+            ]
+        ),
+    ),
+    path(
+        "producttype/",
+        include(
+            [
+                path(
+                    "list/",
+                    views.ProductTypeListView.as_view(),
+                    name="producttype_list",
+                ),
+                path(
+                    "create/",
+                    views.ProductTypeCreateView.as_view(),
+                    name="producttype_create",
+                ),
+                path(
+                    "create/<int:category>",
+                    views.ProductTypeCreateView.as_view(),
+                    name="producttype_create",
+                ),
+                path(
+                    "update/<int:pk>/",
+                    views.ProductTypeUpdateView.as_view(),
+                    name="producttype_update",
+                ),
+            ],
+        ),
+    ),
+    path(
+        "warehouse/",
+        include(
+            [
+                path(
+                    "list/",
+                    views.WarehouseListView.as_view(),
+                    name="warehouse_list",
+                ),
+                path(
+                    "create/",
+                    views.WarehouseCreateView.as_view(),
+                    name="warehouse_create",
+                ),
+                path(
+                    "update/<int:pk>/",
+                    views.WarehouseUpdateView.as_view(),
+                    name="warehouse_update",
+                ),
+                path(
+                    "location/<int:pk>/",
+                    get_location,
+                    name="warehouse_location",
+                ),
+            ],
+        ),
+    ),
+    path(
+        "stock/",
+        include(
+            [
+                path(
+                    "list/",
+                    views.StockListView.as_view(),
+                    name="stock_list",
+                ),
+                path(
+                    "create/",
+                    views.StockCreateView.as_view(),
+                    name="stock_create",
+                ),
+                path(
+                    "update/<int:pk>/",
+                    views.StockUpdateView.as_view(),
+                    name="stock_update",
+                ),
+            ],
+        ),
+    ),
+]

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Sarasa
+{% endblock title %}
+
+{% block content %}
+    {% include 'messages.html' %}
+
+    <h1>Comprobante Nuevo</h1>
+
+    <form method="POST" class="row g-3">
+        {% csrf_token %}
+
+        <div class="col-md-6">
+            {{ form.contact.label_tag }}
+            {{ form.contact }}
+        </div>
+        <div class="col-md-6"></div>
+
+        <div class="col-md-6">
+            {{ form.tipo.label_tag }}
+            {{ form.tipo }}
+        </div>
+        <div class="col-md-6">
+            <div class="row g-1">
+                <div class="col-md-2">
+                    {{ form.letra.label_tag }}
+                    {{ form.letra }}
+                </div>
+                <div class="col-md-4">
+                    {{ form.punto_venta.label_tag }}
+                    {{ form.punto_venta }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.numero.label_tag }}
+                    {{ form.numero }}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            {{ form.issue_date.label_tag }}
+            {{ form.issue_date }}
+        </div>
+        <div class="col-md-6">
+            {{ form.due_date.label_tag }}
+            {{ form.due_date }}
+        </div>
+
+        <div class="col-md-12">
+            {{ form.detail.label_tag }}
+            {{ form.detail }}
+        </div>
+
+        <div class="col-md-4">
+            {{ form.neto.label_tag }}
+            {{ form.neto }}
+        </div>
+        <div class="col-md-4">
+            {{ form.iva.label_tag }}
+            {{ form.iva }}
+        </div>
+        <div class="col-md-4">
+            <label for="id_bruto">Bruto:</label>
+            <input type="number" class="form-control" name="bruto" id="id_bruto" value="0" disabled>
+        </div>
+
+        <input type="submit" class="btn btn-primary" value="Guardar">
+    </form>
+
+    <script src="{% static 'js/comprobante_form.js' %}"></script>
+{% endblock content %}

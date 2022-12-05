@@ -1,0 +1,209 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block card_body %}
+
+    <div class="row gx-3 justify-content-between">
+        <div class="col-sm-3">
+            <label class="m-2" for="id_id">ID N&deg;</label>
+            <p class="fw-bold m-2">{{ object.id }}</p>
+        </div>
+        <div class="col-sm-3">
+            <label class="m-2" for="id_issue_date">Fecha de emisión</label>
+            <p class="fw-bold m-2">{{ object.issue_date }}</p>
+        </div>
+        {% if model == "invoice" %}
+            <div class="col-sm">
+                <label class="m-2" for="id_sale_term">Condición de venta</label>
+                <p class="fw-bold m-2">{{ object.get_sale_term_display }}</p>
+            </div>
+            <div class="col-sm">
+                <label class="m-2" for="id_due_date">Fecha de vencimiento</label>
+                <p class="fw-bold m-2">{{ object.due_date }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="row gx-3 align-items-end">
+        <div class="col-sm-8">
+            <label class="m-2" for="id_customer">Cliente</label>
+            <p class="fw-bold m-2">
+                {{ object.customer }}
+                <a href="{% url 'customer_update' object.customer.id %}" class="text-decoration-none ms-2 eye"
+                data-bs-toggle="tooltip" data-bs-title="Ver datos cliente">
+                    <i class="bi bi-eye"></i>
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <div class="row gx-3">
+        <div class="col-sm-8">
+            <label class="m-2" for="id_address">Domicilio</label>
+            <p class="fw-bold m-2">
+                {{ object.address }}
+            </p>
+        </div>
+        <div class="col-sm">
+            <label class="m-2" for="id_phone_number">Teléfono</label>
+            <p class="fw-bold m-2">
+                {{ object.phone_number }}
+                {% if model == "hiring" %}
+                    <a href="#" class="text-decoration-none ms-2 whatsapp"
+                    data-bs-toggle="tooltip" data-bs-title="Escribir por Whatsapp">
+                        <i class="bi bi-whatsapp"></i>
+                    </a>
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    {% if model == "hiring" %}
+        <div class="row gx-3 mt-2 ms-2">
+            <div class="col-sm-2">
+                <i
+                {% if object.is_placed %}
+                    class="bi bi-check-circle-fill" style="color: var(--bs-success);"
+                {% else %}
+                    class="bi bi-x-circle-fill" style="color: var(--bs-danger);"
+                {% endif %}
+                ></i>
+                <label class="m-2 align-middle" for="id_is_placed">Colocado</label>
+            </div>
+            <div class="col-sm-2">
+                <i
+                {% if object.is_clean %}
+                    class="bi bi-check-circle-fill" style="color: var(--bs-success);"
+                {% else %}
+                    class="bi bi-x-circle-fill" style="color: var(--bs-danger);"
+                {% endif %}
+                ></i>
+                <label class="m-2 align-middle" for="id_is_clean">Limpio</label>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="table-responsive mt-3">
+        <table class="table table-striped">
+            <thead>
+                <tr class="dark">
+                    <td scope="col" style="width: 40vw;">Producto</td>
+                    <td scope="col" class="text-center">Cantidad</th>
+                    <td scope="col" class="text-center">Unitario</th>
+                    <td scope="col" class="text-end">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody class="table-group-divider" id="products-table" name="products-table">
+            {% if object.products.all %}
+                {% for product in object.products.all %}
+                    <tr>
+                        <td>{{ product.product_type }}</td>
+                        <td class="text-center">{{ product.amount }}</td>
+                        <td class="text-center">{{ product.unitario }}</td>
+                        <td class="text-end">{{ product.subtotal }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td>
+                        <i class="bi bi-exclamation-circle me-1"></i>
+                        Este comprobante no posee productos relacionados
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row gx-3">
+        <div class="col-sm-6">
+            <label class="m-2" for="id_notes">Notas</label>
+            <p class="fw-bold m-2">
+                {% if object.notes %}
+                    {{ object.notes }}
+                {% else %}
+                    -
+                {% endif %}
+            </p>
+        </div>
+        <div class="col-sm">
+            <div class="row gx-3">
+                <div class="col-sm m-2">
+                    Subtotal
+                </div>
+                <div class="col-sm">
+                    <p class="m-2 fw-bold text-end">{{ object.subtotal }}</p>
+                </div>
+            </div>
+            <label class="m-2" for="id_taxes">Impuestos</label>
+            <div class="table-responsive">
+                <table class="table">
+                    <tbody>
+                        {% for tax in object.taxes.all %}
+                            <tr>
+                                <td class="fw-bold">{{ tax.tax_type }}</td>
+                                <td class="fw-bold text-end">{{ tax.subtotal }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-3 justify-content-end">
+        <div class="col-sm-6">
+            <hr>
+            <div class="row gx-3">
+                <div class="col-sm m-2">
+                    Total
+                </div>
+                <div class="col-sm">
+                    <p class="m-2 fw-bold text-end">{{ object.total }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if model == "invoice" %}
+        <div class="row gx-3">
+            <div class="col-sm-6">
+                <label class="m-2" for="id_notes">Número de CAI</label>
+                <p class="fw-bold m-2">
+                    {% if object.cai %}
+                        {{ object.cai }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    <br>
+
+    <div class="row gx-2 text-center justify-content-center">
+        <div class="col-sm">
+            <a href="{% url model|add:'_list' %}" class="btn btn-outline-secondary m-1">
+                <i class="bi bi-arrow-return-left me-2"></i>Volver
+            </a>
+
+            {% if not model == "invoice" %}
+                <a href="{% url model|add:'_update' object.pk %}" class="btn btn-outline-primary m-1">
+                    <i class="bi bi-pencil me-2"></i>Editar
+                </a>
+            {% endif %}
+
+            {% if not model == "hiring" %}
+                <a href="#" class="btn btn-outline-success m-1">
+                    <i class="bi bi-whatsapp" style="margin-right: .5vw;"></i>
+                    Enviar
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock card_body %}

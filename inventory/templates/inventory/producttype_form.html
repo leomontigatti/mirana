@@ -1,0 +1,80 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block card_body %}
+
+    <form method="post" class="needs-validation" id="{{ model }}_form" novalidate autocomplete="off">
+        {% csrf_token %}
+        <div class="row gx-2 align-items-end">
+            <div class="col-sm-3">
+                <label class="m-2" for="id_id">ID N&deg;</label>
+                <input type="text" name="id" value="{% if form.instance.id %}{{ form.instance.id }}{% else %}-{% endif %}" id="id_id" class="form-control noinput">
+            </div>
+            <div class="col-sm-3">
+                {{ form.reference_code.label_tag }}
+                {{ form.reference_code }}
+            </div>
+            <div class="col-sm-3">
+                {{ form.category.label_tag }}
+                {{ form.category }}
+            </div>
+            <div class="col-sm text-center mt-2">
+                {% if category_form %}
+                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#categoryModal">
+                        <i class="bi bi-plus-lg me-2"></i>Nueva categoría
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="row gx-2 align-items-end">
+            <div class="col-sm">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+            </div>
+            <div class="col-sm-3">
+                {{ form.measurement_unit.label_tag }}
+                {{ form.measurement_unit }}
+            </div>
+            <div class="col-sm-2 text-center">
+                {{ form.is_active }}
+                {{ form.is_active.label_tag }}
+            </div>
+        </div>
+
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+            </div>
+        </div>
+
+        <div class="row gx-2">
+            <div class="col-sm-6">
+                {{ form.cuenta.label_tag }}
+                {{ form.cuenta }}
+            </div>
+        </div>
+
+        <br>
+        <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
+
+        <div class="row gx-2 text-center justify-content-center">
+            <div class="col-sm">
+                <a href="{% url model|add:'_list' %}" class="btn btn-outline-secondary m-1">
+                    <i class="bi bi-arrow-return-left me-2"></i>Volver
+                </a>
+                <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="modal" data-bs-target="#createModal">
+                    Guardar
+                </button>
+            </div>
+        </div>
+
+        {% include 'create_modal.html' %}
+    </form>
+
+    {% if category_form %}
+        {% include 'inventory/category_form.html' %}
+    {% endif %}
+
+{% endblock card_body %}

@@ -1,0 +1,65 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block list_body %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr class="dark">
+                    <td scope="col" class="text-center">Número</td>
+                    <td scope="col">Cliente</td>
+                    {% if model == "invoice" %}
+                        <td scope="col" class="text-center">Tipo y número de ID</td>
+                    {% endif %}
+                    <td scope="col" class="text-center">Domicilio</td>
+                    {% if model == "hiring" %}
+                        <td scope="col" class="text-center">Colocado</td>
+                        <td scope="col" class="text-center">Limpio</td>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody class="table-group-divider">
+                {% for object in object_list %}
+                    <tr>
+                        <td class="text-center">{{ object.id }}</td>
+                        <td>
+                            <a href="{% url model|add:'_update' object.id %}" class="text-decoration-none">{{ object.customer }}</a>
+                        </td>
+                        {% if model == "invoice" %}
+                            <td class="text-center">{{ object.customer.identification_type }} {{ object.customer.identification_number }}</td>
+                        {% endif %}
+                        <td>
+                            {% if object.address %}
+                                {{ object.address }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        {% if model == "hiring" %}
+                            <td class="text-center">
+                                <i
+                                {% if object.is_placed %}
+                                    class="bi bi-check-circle-fill" style="color: var(--bs-success);"
+                                {% else %}
+                                    class="bi bi-x-circle-fill" style="color: var(--bs-danger);"
+                                {% endif %}
+                                ></i>
+                            </td>
+                            <td class="text-center">
+                                <i
+                                {% if object.is_clean %}
+                                    class="bi bi-check-circle-fill" style="color: var(--bs-success);"
+                                {% else %}
+                                    class="bi bi-x-circle-fill" style="color: var(--bs-danger);"
+                                {% endif %}
+                                ></i>
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock list_body %}

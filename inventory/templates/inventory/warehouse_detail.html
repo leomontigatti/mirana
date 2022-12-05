@@ -1,0 +1,61 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block card_body %}
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <label class="m-2" for="id_id">ID N&deg;</label>
+            <p class="fw-bold m-2">{{ object.id }}</p>
+        </div>
+        <div class="col-sm">
+            <label class="m-2" for="id_name">Nombre</label>
+            <p class="fw-bold m-2">{{ object.name }}</p>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <label class="m-2" for="id_address">Domicilio</label>
+            <p class="fw-bold m-2">
+                {% if object.address %}
+                    {{ object.address }}
+                    <a href="{% url model|add:'_location' object.pk %}" class="text-decoration-none ms-2 geo"
+                    data-bs-toggle="tooltip" data-bs-title="Ver ubicación">
+                        <i class="bi bi-geo-alt"></i>
+                    </a>
+                {% else %}
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    Este {{ model|to_spanish }} no posee un domicilio relacionado.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <div class="row gx-3">
+        <div class="col-sm">
+            <label class="m-2" for="id_notes">Notas</label>
+            <p class="fw-bold m-2">
+                {% if object.notes %}
+                    {{ object.notes }}
+                {% else %}
+                    -
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+    <br>
+
+    <div class="row gx-2 text-center justify-content-center">
+        <div class="col-sm">
+            <a href="{% url model|add:'_list' %}" class="btn btn-outline-secondary m-1">
+                <i class="bi bi-arrow-return-left me-2"></i>Volver
+            </a>
+            <a href="{% url model|add:'_update' object.id %}" class="btn btn-outline-primary m-1">
+                <i class="bi bi-pencil me-2"></i>Editar
+            </a>
+        </div>
+    </div>
+
+{% endblock card_body %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Sarasa
+{% endblock title %}
+
+{% block content %}
+
+        <h1>Lista de comprobantes</h1>
+
+        <form method="get">
+            <input type="text" name="search_input" value="{{search_input}}" placeholder="Buscar">
+            <button type="submit">Enviar</button>
+        </form>
+        <p>
+            Ingrese una busqueda por nombre, direccion o DNI / Cuit
+        </p>
+
+        {% if search_input and not receipt_list %}
+            <p>No existen coincidencias para la búsqueda realizada.</p>
+        {% elif not receipt_list %}
+            <p>No existen comprobantes creados. Podés crear uno haciendo click <a href="#">acá</a></p>
+        {% else %}
+            <table class="table-fixed">
+                <thead>
+                    <tr>
+                        <th>Contacto</th>
+                        <th>Tipo de comprobante</th>
+                        <th>Numero de comprobante</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for receipt in receipt_list %}
+                        <tr class="odd:bg-white even:bg-slate-50">
+                            <td>{{ receipt.get_tipo_display }}</td>
+                            <td><p class="font-bold">{{ receipt.number }}</p></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+        <a href="{% url 'receipt_create' %}">Crear Comprobante</a>
+{% endblock content %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Órdenes de compra
+{% endblock title %}
+
+{% block content %}
+    <p>{{ purchaseorder.id }}</p>
+    <p>{{ purchaseorder.supplier.name }}</p>
+    <p>{{ purchaseorder.supplier.identification_type }}</p>
+    <p>{{ purchaseorder.supplier.identification_number }}</p>
+    <p>{{ purchaseorder.notes }}</p>
+
+    <a href="{% url 'purchaseorder_list' %}" class="btn btn-outline-secondary">Volver</a>
+{% endblock content %}

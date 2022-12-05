@@ -1,0 +1,77 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block card_body %}
+
+    <h3 class="m-2 text-muted">Cuentas contables</h3>
+
+    <!-- <div class="accordion" id="cuentasAccordion">
+        {% for capitulo in capitulos_list %}
+            <div class="accordion-item">
+                <div class="accordion-header" id="{{ capitulo }}Heading">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ capitulo }}Collapse" aria-expanded="true" aria-controls="{{ capitulo }}Collapse">
+                        {{ capitulo }}
+                    </button>
+                </div>
+                <div id="{{ capitulo }}Collapse" class="accordion-collapse collapse" aria-labelledby="{{ capitulo }}Heading">
+                    <div class="accordion-body">
+                        {% for rubro in rubros_list %}
+                            {% if rubro.capitulo == capitulo %}
+                            <div class="accordion-item">
+                                <div class="accordion-header" id="{{ rubro }}Heading">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ rubro }}Collapse" aria-expanded="false" aria-controls="{{ rubro }}Collapse">
+                                        {{ rubro }}
+                                    </button>
+                                </div>
+                                <div id="{{ rubro }}Collapse" class="accordion-collapse collapse" aria-labelledby="{{ rubro }}Heading">
+                                    <div class="accordion-body">
+                                        {% for subrubro in subrubros_list %}
+                                            {% if subrubro.rubro == rubro %}
+                                            <div class="accordion-item">
+                                                <div class="accordion-header" id="{{ subrubro }}Heading">
+                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{ subrubro }}Collapse" aria-expanded="false" aria-controls="subrubroCollapse">
+                                                        {{ subrubro }}
+                                                    </button>
+                                                </div>
+                                                <div id="{{ subrubro }}Collapse" class="accordion-collapse collapse" aria-labelledby="{{ subrubro }}Heading">
+                                                    <div class="accordion-body">
+                                                        Cuenta
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div> -->
+
+    {% for capitulo in capitulos_list %}
+        {{ capitulo }}<br>
+        {% for rubro in rubros_list %}
+            {% if rubro.capitulo == capitulo %}
+                - - {{ rubro }}<br>
+                {% for subrubro in subrubros_list %}
+                    {% if subrubro.rubro == rubro %}
+                        - - - - {{ subrubro }}<br>
+                        {% for cuenta in cuenta_list %}
+                            {% if cuenta.subrubro == subrubro %}
+                                - - - - - - {{ cuenta }}<br>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+
+    <script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endblock card_body %}

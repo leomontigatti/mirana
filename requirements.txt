@@ -1,0 +1,10 @@
+django
+python-decouple
+psycopg2-binary
+black
+flake8
+isort
+pre-commit
+wheel
+pillow
+django-cleanup

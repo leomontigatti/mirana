@@ -1,0 +1,83 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block card_body %}
+
+    <form method="post" class="needs-validation" id="{{ model }}_form" novalidate autocomplete="off">
+        {% csrf_token %}
+        <div class="row gx-3 justify-content-between">
+            <div class="col-sm-3">
+                <label class="fw-bold m-2" for="id_id">Código de cliente</label>
+                <input type="text" name="id" value="{% if form.instance.id %}{{ form.instance.id }}{% else %}-{% endif %}" id="id_id" class="form-control noinput">
+            </div>
+            <div class="col-sm-3">
+                {{ form.situacion_iva.label_tag }}
+                {{ form.situacion_iva }}
+            </div>
+            <div class="col-sm-3">
+                {{ form.create_date.label_tag }}
+                {{ form.create_date }}
+            </div>
+        </div>
+
+        <div class="row gx-3">
+            <div class="col-sm-6">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+            </div>
+            <div class="col-sm">
+                {{ form.identification_type.label_tag }}
+                {{ form.identification_type }}
+            </div>
+            <div class="col-sm">
+                {{ form.identification_number.label_tag }}
+                {{ form.identification_number }}
+            </div>
+        </div>
+
+        <div class="row gx-3">
+            <div class="col-sm-8">
+                {{ form.address.label_tag }}
+                <div class="input-group">
+                    {{ form.address }}
+                    <a class="btn btn-outline-secondary"
+                    onclick="window.open(`{% url 'render_map' %}`, 'newwindow', 'width=700, height=450'); return false">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm">
+                {{ form.phone_number.label_tag }}
+                {{ form.phone_number }}
+            </div>
+        </div>
+        <div class="row gx-3">
+            <div class="col-sm">
+                {{ form.notes.label_tag }}
+                {{ form.notes }}
+            </div>
+        </div>
+
+        {{ form.location }}
+        {{ form.cuenta }}
+        <br>
+        <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
+
+        <div class="row gx-3 text-center justify-content-center">
+            <div class="col-sm">
+                <a href="{% url model|add:'_list' %}" class="btn btn-outline-secondary m-1">
+                    <i class="bi bi-arrow-return-left me-2"></i>Volver
+                </a>
+                <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="modal" data-bs-target="#createModal">
+                    Guardar
+                </button>
+            </div>
+        </div>
+
+        {% include 'create_modal.html' %}
+    </form>
+
+    <script src="{% static 'main/js/form_validation.js' %}"></script>
+    <script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endblock card_body %}

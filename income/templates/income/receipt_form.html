@@ -1,0 +1,222 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block card_body %}
+
+    {% if receipt_list %}
+        <form method="get" >
+            <div class="row gx-2">
+                <div class="col-sm-8">
+                    <label class="m-2" for="id_receipt">{{ receipt_type|lower|to_spanish|title }}</label>
+                    <select name="receipt" id="id_receipt" class="form-select" onchange="this.form.submit()">
+                        <option value=""> --------- </option>
+                        {% for receipt in receipt_list %}
+                            <option value="{{ receipt.id }}">{{ receipt }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+
+    <form method="post" class="needs-validation" id="{{ model }}_form" novalidate autocomplete="off">
+        {% csrf_token %}
+        <div class="row gx-2 justify-content-between">
+            <div class="col-sm-3">
+                <label class="m-2" for="id_id">ID N&deg;</label>
+                <input type="text" name="id" value="{% if form.instance.id %}{{ form.instance.id }}{% else %}-{% endif %}" id="id_id" readonly class="form-control noinput">
+            </div>
+            <div class="col-sm-3">
+                {{ form.issue_date.label_tag }}
+                {{ form.issue_date }}
+            </div>
+            <div class="col-sm-3 {% if not model == 'invoice' %}visually-hidden{% endif %}">
+                {{ form.sale_term.label_tag }}
+                {{ form.sale_term }}
+            </div>
+            <div class="col-sm-3 {% if not model == 'invoice' %}visually-hidden{% endif %}">
+                {{ form.due_date.label_tag }}
+                {{ form.due_date }}
+            </div>
+        </div>
+
+        <div class="row gx-2 align-items-end">
+            <div class="col-sm-8">
+                {{ form.customer.label_tag }}
+                {{ form.customer }}
+            </div>
+            {% if not form.instance.id %}
+                <div class="col-sm text-center mt-2">
+                    <a href="{% url 'customer_create' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-lg me-2"></i>Nuevo cliente
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="row gx-2">
+            <div class="col-sm-8">
+                {{ form.address.label_tag }}
+                <div class="input-group">
+                    {{ form.address }}
+                    <a class="btn btn-outline-secondary"
+                    onclick="window.open(`{% url 'render_map' %}`, 'newwindow', 'width=700, height=450'); return false">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="col-sm">
+                {{ form.phone_number.label_tag }}
+                {{ form.phone_number }}
+            </div>
+        </div>
+
+        {% if model == "hiring" %}
+            <div class="row gx-2 mt-2 ms-2">
+                <div class="col-sm-2">
+                    {{ form.is_placed }}
+                    {{ form.is_placed.label_tag }}
+                </div>
+                <div class="col-sm-2">
+                    {{ form.is_clean }}
+                    {{ form.is_clean.label_tag }}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <td scope="col" style="width: 40vw;">Producto</td>
+                        <td scope="col" class="text-center">Cantidad</td>
+                        <td scope="col" class="text-center">Unitario</th>
+                        <td scope="col" class="text-center">Subtotal</th>
+                        <td scope="col" class="text-center"></th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider" id="products-table" name="products-table">
+                    {% for form in product_formset.forms %}
+                        <tr>
+                            <td>{{ form.product_type }}</td>
+                            <td>{{ form.amount }}</td>
+                            <td>{{ form.unitario }}</td>
+                            <td>{{ form.subtotal }}</td>
+                            <td class="align-middle text-center">
+                                {{ form.DELETE }}
+                                {{ form.receipt }}
+                                {{ form.id }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row gx-2 text-center justify-content-center m-2">
+            <div class="col-sm">
+                <a id="add-product" class="btn btn-outline-primary">
+                    <i class="bi bi-plus-lg me-2"></i>Agregar producto
+                </a>
+            </div>
+        </div>
+
+        <div class="row gx-2">
+            <div class="col-sm-6">
+                {{ form.notes.label_tag }}
+                {{ form.notes }}
+            </div>
+            <div class="col-sm">
+                <div class="row gx-2">
+                    <div class="col-sm m-2">
+                        Subtotal
+                    </div>
+                    <div class="col-sm">
+                        {{ form.subtotal }}
+                    </div>
+                </div>
+                <label class="m-2" for="id_taxes">Impuestos</label>
+                {% for form in tax_formset.forms %}
+                    <div class="row gx-2 m-1" name="taxes-row">
+                        <div class="col-sm">
+                            {{ form.tax_type }}
+                        </div>
+                        <div class="col-sm">
+                            {{ form.subtotal }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row gx-2 justify-content-end">
+            <div class="col-sm-6">
+                <hr>
+                <div class="row gx-2">
+                    <div class="col-sm m-2">
+                        Total
+                    </div>
+                    <div class="col-sm">
+                        {{ form.total }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if model == "invoice" %}
+            <div class="row gx-2">
+                <div class="col-sm-6">
+                    {{ form.cai.label_tag }}
+                    {{ form.cai }}
+                </div>
+            </div>
+        {% endif %}
+
+        {{ form.location }}
+        {{ product_formset.management_form }}
+        {{ tax_formset.management_form }}
+
+        <div id="empty-formset" hidden>
+            <table>
+                {{ product_formset.empty_form.as_table }}
+            </table>
+        </div>
+
+        <br>
+        <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
+
+        <div class="row gx-2 text-center justify-content-center">
+            <div class="col-sm">
+                <a href="{% url model|add:'_list' %}" class="btn btn-outline-secondary m-1">
+                    <i class="bi bi-arrow-return-left me-2"></i>Volver
+                </a>
+                {% if form.instance.id %}
+                    <button type="button" class="btn btn-outline-danger m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        Borrar
+                    </button>
+                {% endif %}
+                <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="modal" data-bs-target="#createModal">
+                    Guardar
+                </button>
+                {% if model == "invoice" %}
+                    <a href="#" type="button" class="btn btn-outline-info m-1">
+                        <i class="bi bi-receipt me-2"></i>Facturar
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </form>
+
+    {% include 'create_modal.html' %}
+
+    {% if form.instance.id %}
+        {% include 'delete_modal.html' %}
+    {% endif %}
+
+    <script>
+        const instanceId = "{{ form.instance.id }}"
+    </script>
+
+    <script src="{% static 'income/js/form.js' %}"></script>
+
+{% endblock card_body %}
