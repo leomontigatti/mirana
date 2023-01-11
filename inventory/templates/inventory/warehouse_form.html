@@ -1,59 +1,53 @@
-{% extends 'card.html' %}
-{% load static extra_tags %}
+{% load static widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
 
-{% block card_body %}
-
-    <form method="post" class="needs-validation" id="{{ model }}_form" novalidate autocomplete="off">
-        {% csrf_token %}
-        <div class="row gx-2 align-items-end">
-            <div class="col-sm-3">
-                <label class="m-2" for="id_id">ID N&deg;</label>
-                <input type="text" name="id" value="{% if form.instance.id %}{{ form.instance.id }}{% else %}-{% endif %}" id="id_id" class="form-control noinput">
-            </div>
-            <div class="col-sm">
-                {{ form.name.label_tag }}
-                {{ form.name }}
-            </div>
+    <form hx-post="{{ request.path }}" class="modal-content" novalidate autocomplete="off">
+        <div class="modal-header">
+            <h1 class="fw-bold modal-title fs-5">
+                {% if warehouse %}
+                    Modificar
+                {% else %}
+                    Nuevo
+                {% endif %}
+                    depósito
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-
-        <div class="row gx-3">
-            <div class="col-sm">
-                {{ form.address.label_tag }}
-                <div class="input-group">
-                    {{ form.address }}
-                    <a class="btn btn-outline-secondary"
-                    onclick="window.open(`{% url 'render_map' %}`, 'newwindow', 'width=700, height=450'); return false">
-                        <i class="bi bi-search"></i>
-                    </a>
+        <div class="modal-body">
+            <div class="row gx-2">
+                <div class="col-sm">
+                    {{ form.name.label_tag }}
+                    {% render_field form.name class="form-control" %}
+                    <div class="invalid-feedback">
+                        {{ form.name.errors|first }}
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="row gx-2">
-            <div class="col-sm">
-                {{ form.notes.label_tag }}
-                {{ form.notes }}
+            <div class="row gx-2">
+                <div class="col-sm">
+                    {{ form.address.label_tag }}
+                    {% render_field form.address class="form-control" %}
+                    <div class="invalid-feedback">
+                        {{ form.address.errors|first }}
+                    </div>
+                </div>
             </div>
-        </div>
-
-        {{ form.location }}
-
-        <br>
-        <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
-
-        <div class="row gx-2 text-center justify-content-center">
-            <div class="col-sm">
-                <a href="{% url model|add:'_list' %}" class="btn btn-outline-secondary m-1">
-                    <i class="bi bi-arrow-return-left me-2"></i>Volver
-                </a>
-                <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="modal" data-bs-target="#createModal">
-                    Guardar
-                </button>
+            <div class="row gx-2">
+                <div class="col-sm">
+                    {{ form.notes.label_tag }}
+                    {% render_field form.notes class="form-control" placeholder="Piso, número de departamento u otras aclaraciones." %}
+                </div>
             </div>
+            <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
         </div>
-
-        {% include 'create_modal.html' %}
-
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary m-1" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-outline-success m-1">
+                <i class="bi bi-check2 me-2"></i>Guardar
+            </button>
+        </div>
     </form>
 
-{% endblock card_body %}
+    <script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endwith %}

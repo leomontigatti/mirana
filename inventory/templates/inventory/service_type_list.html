@@ -1,0 +1,50 @@
+{% load static %}
+
+<table class="table table-striped" id="search-results">
+    {% if service_type_list %}
+        <thead>
+            <tr class="dark">
+                <td scope="col" class="text-center w-25">Código de referencia</td>
+                <td scope="col">Descripción</td>
+                <td scope="col" class="text-center">Activo</td>
+                <td scope="col" class="text-center" style="width: 10%;">Acciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service_type in service_type_list %}
+                <tr>
+                    <td class="text-center">{{ service_type.reference_code }}</td>
+                    <td>{{ service_type.description }} </td>
+                    <td class="text-center">
+                        <i
+                        {% if service_type.is_active %}
+                            class="bi bi-check-circle-fill" style="color: var(--bs-success);"
+                        {% else %}
+                            class="bi bi-x-circle-fill" style="color: var(--bs-danger);"
+                        {% endif %}
+                        ></i>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" hx-get="{% url 'service_type_update' service_type.pk %}"
+                        hx-target="#dialog" class="text-decoration-none me-1 pencil"
+                        data-bs-toggle="tooltip" data-bs-title="Modificar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="#" hx-get="{% url 'service_type_delete' service_type.pk %}"
+                        hx-target="#dialog" class="text-decoration-none text-danger me-1 delete"
+                        data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    {% else %}
+        <p class="m-2">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            Todavía no se creó un tipo de servicio. Podés empezar haciendo click <a href="#" class="text-decoration-none" hx-get="{% url 'service_type_create' %}" hx-target="#dialog">acá</a>.
+        </p>
+    {% endif %}
+</table>
+
+<script src="{% static 'main/js/tooltips.js' %}"></script>

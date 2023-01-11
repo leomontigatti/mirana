@@ -1,42 +1,31 @@
 from django.urls import include, path
 
 from inventory import views
-from main.views import get_location
 
 urlpatterns = [
     path(
-        "category/",
+        "service_type/",
         include(
             [
                 path(
-                    "create", views.CategoryCreateView.as_view(), name="category_create"
+                    "index/", views.service_type_index_view, name="service_type_index"
                 ),
-            ]
-        ),
-    ),
-    path(
-        "producttype/",
-        include(
-            [
-                path(
-                    "list/",
-                    views.ProductTypeListView.as_view(),
-                    name="producttype_list",
-                ),
+                # path("list/<str:option>/<str:value>/", views.service_type_list_view, name="service_type_list"),
+                path("list/", views.service_type_list_view, name="service_type_list"),
                 path(
                     "create/",
-                    views.ProductTypeCreateView.as_view(),
-                    name="producttype_create",
-                ),
-                path(
-                    "create/<int:category>",
-                    views.ProductTypeCreateView.as_view(),
-                    name="producttype_create",
+                    views.service_type_create_view,
+                    name="service_type_create",
                 ),
                 path(
                     "update/<int:pk>/",
-                    views.ProductTypeUpdateView.as_view(),
-                    name="producttype_update",
+                    views.service_type_update_view,
+                    name="service_type_update",
+                ),
+                path(
+                    "delete/<int:pk>/",
+                    views.service_type_delete_view,
+                    name="service_type_delete",
                 ),
             ],
         ),
@@ -45,25 +34,18 @@ urlpatterns = [
         "warehouse/",
         include(
             [
-                path(
-                    "list/",
-                    views.WarehouseListView.as_view(),
-                    name="warehouse_list",
-                ),
-                path(
-                    "create/",
-                    views.WarehouseCreateView.as_view(),
-                    name="warehouse_create",
-                ),
+                path("index/", views.warehouse_index_view, name="warehouse_index"),
+                path("list/", views.warehouse_list_view, name="warehouse_list"),
+                path("create/", views.warehouse_create_view, name="warehouse_create"),
                 path(
                     "update/<int:pk>/",
-                    views.WarehouseUpdateView.as_view(),
+                    views.warehouse_update_view,
                     name="warehouse_update",
                 ),
                 path(
-                    "location/<int:pk>/",
-                    get_location,
-                    name="warehouse_location",
+                    "delete/<int:pk>/",
+                    views.warehouse_delete_view,
+                    name="warehouse_delete",
                 ),
             ],
         ),
@@ -72,21 +54,11 @@ urlpatterns = [
         "stock/",
         include(
             [
-                path(
-                    "list/",
-                    views.StockListView.as_view(),
-                    name="stock_list",
-                ),
-                path(
-                    "create/",
-                    views.StockCreateView.as_view(),
-                    name="stock_create",
-                ),
-                path(
-                    "update/<int:pk>/",
-                    views.StockUpdateView.as_view(),
-                    name="stock_update",
-                ),
+                path("index/", views.stock_index_view, name="stock_index"),
+                path("list/", views.stock_list_view, name="stock_list"),
+                path("create/", views.stock_create_view, name="stock_create"),
+                path("update/<int:pk>/", views.stock_update_view, name="stock_update"),
+                path("delete/<int:pk>/", views.stock_delete_view, name="stock_delete"),
             ],
         ),
     ),

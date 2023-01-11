@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from decouple import config
+from django.contrib import messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -11,34 +12,40 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY: str = config("SECRET_KEY")
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG: bool = config("DEBUG", cast=bool)
+DEBUG = config("DEBUG", cast=bool)
 
-ALLOWED_HOSTS: list = config(
+ALLOWED_HOSTS = config(
     "ALLOWED_HOSTS", cast=lambda v: [s.strip() for s in v.split(",")]
 )
+
+ADMINS = [("Admin", config("EMAIL_HOST_USER"))]
 
 
 # Application definition
 
-INSTALLED_APPS: list = [
+INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Third party apps,
+    "django_celery_results",
+    "widget_tweaks",
     # Own apps
     "accounting",
+    "configuration",
     "expenses",
     "income",
     "inventory",
     "main",
 ]
 
-MIDDLEWARE: list = [
+MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -46,13 +53,14 @@ MIDDLEWARE: list = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "main.middleware.HtmxMessageMiddleware",
 ]
 
-SESSION_EXPIRE_AT_BROWSER_CLOSE: bool = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-ROOT_URLCONF: str = "mirana.urls"
+ROOT_URLCONF = "mirana.urls"
 
-TEMPLATES: list = [
+TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [],
@@ -68,13 +76,13 @@ TEMPLATES: list = [
     },
 ]
 
-WSGI_APPLICATION: str = "mirana.wsgi.application"
+WSGI_APPLICATION = "mirana.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES: dict = {
+DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
@@ -85,7 +93,7 @@ DATABASES: dict = {
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS: list = [
+AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
@@ -104,32 +112,59 @@ AUTH_PASSWORD_VALIDATORS: list = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE: str = "es-ar"
+LANGUAGE_CODE = "es-ar"
 
-TIME_ZONE: str = "America/Argentina/Cordoba"
+TIME_ZONE = "America/Argentina/Cordoba"
 
-USE_I18N: bool = True
+USE_TZ = True
 
-USE_L10N: bool = True
-
-USE_TZ: bool = True
+USE_THOUSAND_SEPARATOR = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL: str = "/static/"
-STATIC_ROOT: str = os.path.join(BASE_DIR, "static/")
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
-MEDIA_URL: str = "/media/"
-MEDIA_ROOT: str = os.path.join(BASE_DIR, "media/")
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD: str = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL: str = "login"
-LOGIN_REDIRECT_URL: str = "home"
-LOGOUT_REDIRECT_URL: str = "home"
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "home"
+LOGOUT_REDIRECT_URL = "home"
+
+
+# Celery settings
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_CACHE_BACKEND = "django-cache"
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "America/Argentina/Cordoba"
+CELERY_ENABLE_UTC = True
+
+# For testing purposes
+if DEBUG:
+    CELERY_ALWAYS_EAGER = True
+    CELERY_EAGER_PROPAGATES = True
+    BROKER_BACKEND = "memory"
+
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+MESSAGE_TAGS = {
+    messages.DEBUG: "alert-secondary",
+    messages.INFO: "alert-info",
+    messages.SUCCESS: "alert-success",
+    messages.WARNING: "alert-warning",
+    messages.ERROR: "alert-danger",
+}

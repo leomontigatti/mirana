@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import csv
 
 from django.core.management.base import BaseCommand, CommandError
@@ -9,7 +7,7 @@ from accounting.models import Cuenta, Rubro, Subrubro
 
 class Command(BaseCommand):
     """
-    Base command used for importing rubros, subrurbos and cuentas in a CSV file.
+    Base command used for importing rubros, subrubros and cuentas in a CSV file.
     This file must contain the columns:
     'capitulo', 'rubro', 'subrubro' and 'cuenta'
     """

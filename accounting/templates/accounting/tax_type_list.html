@@ -1,0 +1,40 @@
+{% load static %}
+
+<table class="table table-striped">
+    {% if tax_type_list %}
+        <thead>
+            <tr class="dark">
+                <td>Nombre</td>
+                <td>Porcentaje</td>
+                <td scope="col" class="text-center" style="width: 10%;">Acciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tax_type in tax_type_list %}
+                <tr id="tax_type_{{ tax_type.pk }}">
+                    <td>{{ tax_type.name }}</td>
+                    <td>{{ tax_type.percentage }}</td>
+                    <td class="text-center">
+                        <a href="#" hx-get="{% url 'tax_type_update' tax_type.pk %}"
+                        hx-target="#dialog" class="text-decoration-none me-1 pencil"
+                        data-bs-toggle="tooltip" data-bs-title="Modificar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="#" hx-get="{% url 'tax_type_delete' tax_type.pk %}"
+                        hx-target="#dialog" class="text-decoration-none text-danger me-1 delete"
+                        data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    {% else %}
+        <p class="m-2">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            Todavía no se creó un impuesto. Podés empezar haciendo click <a href="#" class="text-decoration-none" hx-get="{% url 'tax_type_create' %}" hx-target="#dialog">acá</a>.
+        </p>
+    {% endif %}
+</table>
+
+<script src="{% static 'main/js/tooltips.js' %}"></script>

@@ -1,0 +1,37 @@
+<table class="table table-striped">
+    {% if payment_method_list %}
+        <thead>
+            <tr class="dark">
+                <td scope="col">Cuenta</td>
+                <td scope="col">Nombre</td>
+                <td scope="col" class="text-center">Activo</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment_method in payment_method_list %}
+                <tr id="payment_method_{{ payment_method.pk }}">
+                    <td>
+                        <a href="#" class="text-decoration-none">{{ payment_method.cuenta }}</a>
+                    </td>
+                    <td>{{ payment_method }}</td>
+                    <td class="text-center">
+                        {% if payment_method.is_active %}
+                            <a href="{% url 'payment_method_is_active' payment_method.pk %}">
+                                <i class="bi bi-toggle-on text-success"></i>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'payment_method_is_active' payment_method.pk %}">
+                                <i class="bi bi-toggle-off text-muted"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        {% else %}
+            <p class="m-2">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                Todavía no se creó una forma de pago. Podés empezar haciendo click <a href="#" class="text-decoration-none" hx-get="{% url 'payment_method_create' %}" hx-target="#dialog">acá</a>.
+            </p>
+    {% endif %}
+</table>

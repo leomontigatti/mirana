@@ -8,3 +8,6 @@ pre-commit
 wheel
 pillow
 django-cleanup
+celery
+django-celery-results
+django-widget-tweaks

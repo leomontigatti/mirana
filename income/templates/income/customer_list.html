@@ -1,37 +1,42 @@
-{% extends 'card.html' %}
-{% load static extra_tags %}
+{% load static %}
 
-{% block list_body %}
-
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr class="dark">
-                    <td scope="col" class="text-center">Código</td>
-                    <td scope="col">Nombre o razón social</td>
-                    <td scope="col" class="text-center">Tipo y número de ID</td>
-                    <td scope="col" class="text-center">Domicilio</td>
+<table class="table table-striped">
+    {% if customer_list %}
+        <thead>
+            <tr class="dark">
+                <td scope="col">Nombre o razón social</td>
+                <td scope="col">Tipo y número de ID</td>
+                <td scope="col">Domicilio</td>
+                <td scope="col" class="text-center" style="width: 10%;">Acciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customer_list %}
+                <tr>
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.identification_type }} {{ customer.identification_number }}</td>
+                    <td>{{ customer.address }}</td>
+                    <td class="text-center">
+                        <a href="#" hx-get="{% url 'customer_update' customer.pk %}"
+                        hx-target="#dialog" class="text-decoration-none me-1 pencil"
+                        data-bs-toggle="tooltip" data-bs-title="Modificar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="#" hx-get="{% url 'customer_delete' customer.pk %}"
+                        hx-target="#dialog" class="text-decoration-none text-danger me-1 delete"
+                        data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                {% for object in object_list %}
-                    <tr>
-                        <td class="text-center">{{ object.id }}</td>
-                        <td>
-                            <a href="{% url model|add:'_update' object.id %}" class="text-decoration-none">{{ object.name }}</a>
-                        </td>
-                        <td class="text-center">{{ object.identification_type }} {{ object.identification_number }}</td>
-                        <td>
-                            {% if object.address %}
-                                {{ object.address }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    {% else %}
+        <p class="m-2">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            Todavía no se creó un cliente. Podés empezar haciendo click <a href="#" class="text-decoration-none" hx-get="{% url 'customer_create' %}" hx-target="#dialog">acá</a>.
+        </p>
+    {% endif %}
+</table>
 
-{% endblock list_body %}
+<script src="{% static 'main/js/tooltips.js' %}"></script>

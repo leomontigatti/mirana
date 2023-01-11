@@ -1,0 +1,35 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+<tr>
+    <td>
+        {% render_field form.description class="form-control" %}
+        <div class="invalid-feedback">
+            {{ form.description.errors|first }}
+        </div>
+    </td>
+    <td>
+        {% render_field form.frequency class="form-select" %}
+        <div class="invalid-feedback">
+            {{ form.frequency.errors|first }}
+        </div>
+    </td>
+    <td>
+        {% render_field form.operator class="form-select" %}
+        <div class="invalid-feedback">
+            {{ form.operator.errors|first }}
+        </div>
+    </td>
+    <td>
+        {% render_field form.priority class="form-select" %}
+        <div class="invalid-feedback">
+            {{ form.priority.errors|first }}
+        </div>
+        {% render_field form.task_start_date class="visually-hidden" %}
+        {% render_field form.task_end_date class="visually-hidden" %}
+        {% render_field form.is_done class="visually-hidden" %}
+        {% render_field form.hiring class="visually-hidden" %}
+    </td>
+</tr>
+
+{% endwith %}

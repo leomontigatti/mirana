@@ -1,0 +1,35 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block list_body %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr class="dark">
+                    <td scope="col">Fecha</td>
+                    <td scope="col">Cliente</td>
+                    <td scope="col">Comprobante</td>
+                    <td scope="col" class="text-center">Monto</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for income_payment in income_payment_list %}
+                    <tr>
+                        <td>{{ income_payment.issue_date|date:'SHORT_DATE_FORMAT' }}</td>
+                        <td>{{ income_payment.customer }}</td>
+                        <td>
+                            {% if income_payment.receipt %}
+                                {{ income_payment.receipt }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td class="text-center">{{ income_payment.amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock list_body %}

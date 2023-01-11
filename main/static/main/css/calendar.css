@@ -1,15 +1,15 @@
-th {
+#calendar th {
     height: 3rem;
     width: 5rem;
     text-align: center;
 }
 
-td {
+#calendar td {
     height: 5rem;
     width: 5rem;
     text-align: start;
 }
 
-td.selected {
+#calendar td.selected {
     background-color: blue;
 }

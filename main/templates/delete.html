@@ -1,0 +1,21 @@
+{% load extra_tags %}
+
+<form hx-post="{{ request.path }}" class="modal-content" novalidate>
+    <div class="modal-header">
+        <h1 class="fw-bold modal-title fs-5">
+            Borrar {{ model|to_spanish }}
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body text-center">
+        Estás seguro de borrar?
+        <li><strong>{{ object }}</strong></li>
+        Esta acción <strong>NO</strong> puede deshacerse.
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary m-1" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-outline-danger m-1" data-bs-dismiss="modal">
+            <i class="bi bi-trash3 me-2"></i>Confirmar
+        </button>
+    </div>
+</form>

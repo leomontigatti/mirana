@@ -1,0 +1,65 @@
+{% load static widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+    <form hx-post="{{ request.path }}" class="modal-content" novalidate autocomplete="off">
+        <div class="modal-header">
+            <h1 class="fw-bold modal-title fs-5">
+                {% if service_type %}
+                    Modificar
+                {% else %}
+                    Nuevo
+                {% endif %}
+                    tipo de servicio
+            </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row gx-2">
+                <div class="col-sm">
+                    {{ form.reference_code.label_tag }}
+                    {% render_field form.reference_code class="form-control" data-bs-toggle="tooltip" data-bs-title="Código único de identificación del producto. Máximo 20 caracteres." %}
+                    <div class="invalid-feedback">
+                        {{ form.reference_code.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="row gx-2">
+                <div class="col-sm">
+                    {{ form.description.label_tag }}
+                    {% render_field form.description class="form-control" %}
+                    <div class="invalid-feedback">
+                        {{ form.description.errors|first }}
+                    </div>
+                </div>
+            </div>
+            <div class="row gx-2">
+                <div class="col-sm">
+                    {{ form.cuenta.label_tag }}
+                    {% render_field form.cuenta class="form-select" %}
+                </div>
+            </div>
+            <div class="row gx-2">
+                <div class="col-sm">
+                    {{ form.stock.label_tag }}
+                    {% render_field form.stock class="form-select" data-bs-toggle="tooltip" data-bs-title="Seleccionar si modifica el stock de un producto." %}
+                </div>
+            </div>
+            <div class="row gx-2 mt-2">
+                <div class="col-sm form-check form-switch ms-2">
+                    {{ form.is_active.label_tag }}
+                    {% render_field form.is_active class="form-check-input" role="switch" style="margin-top: 1.4vh;" %}
+                </div>
+            </div>
+            <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary m-1" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-outline-success m-1">
+                <i class="bi bi-check2 me-2"></i>Guardar
+            </button>
+        </div>
+    </form>
+
+{% endwith %}
+
+<script src="{% static 'main/js/tooltips.js' %}"></script>

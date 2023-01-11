@@ -1,26 +1,6 @@
 from django import forms
 
-from accounting.models import Cuenta, Rubro, Subrubro, TaxType
-
-
-class RubroCreateForm(forms.ModelForm):
-    """
-    Form for creating or updating a rubro, related to :model:`accounting.Rubro`.
-    """
-
-    class Meta:
-        model = Rubro
-        fields = "__all__"
-
-
-class SubrubroCreateForm(forms.ModelForm):
-    """
-    Form for creating or updating a subrubro, related to :model:`accounting.Subrubro`.
-    """
-
-    class Meta:
-        model = Subrubro
-        fields = "__all__"
+from accounting.models import Asiento, Cuenta, Entry, TaxType
 
 
 class CuentaCreateForm(forms.ModelForm):
@@ -40,4 +20,14 @@ class TaxTypeCreateForm(forms.ModelForm):
 
     class Meta:
         model = TaxType
-        fields = ("name", "percentage")
+        fields = "__all__"
+
+
+class EntryCreateForm(forms.ModelForm):
+    """
+    Form for creating an asiento entry, related to :model:`accounting.Entry`.
+    """
+
+    class Meta:
+        model = Entry
+        exclude = "__all__"

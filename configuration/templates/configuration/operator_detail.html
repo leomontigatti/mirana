@@ -1,0 +1,50 @@
+{% extends 'card.html' %}
+{% load static %}
+
+{% block card_title %}
+
+    <h3 class="m-2">Detalle operario</h3>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    <div class="row gx-2 py-3">
+        <div class="col-sm input-group">
+            <div class="input-group-text">Nombre y apellido</div>
+            <input type="text" class="form-control noinput" value="{{ operator.user.first_name }} {{ operator.user.last_name }}" readonly>
+        </div>
+        <div class="col-sm-2 form-check form-switch">
+            <input type="checkbox" class="form-check-input mx-auto" role="switch" style="margin-top: 1.4vh;" {% if operator.user.is_active %}checked{% endif %}
+            hx-get="{% url 'operator_is_active' operator.pk %}">
+            <label class="text-muted m-2">Activo</label>
+        </div>
+    </div>
+
+    <div class="col-sm">
+        <div class="table-responsive" hx-trigger="load, taskListChanged from:body" hx-get="{% url 'task_list' operator.pk %}" hx-target="this">
+            <div class="d-flex justify-content-center m-4">
+                <div class="spinner-border text-info me-4" role="status" aria-hidden="true"></div>
+                <span class="align-self-center">Cargando...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2 text-center justify-content-center m-2">
+        <div class="col-sm">
+            <a href="{% url 'operator_index' %}" class="btn btn-outline-secondary m-1">
+                <i class="bi bi-arrow-return-left me-2"></i>Volver
+            </a>
+            <button class="btn btn-outline-primary" hx-get="{% url 'task_create' operator.pk %}" hx-target="#dialog">
+                <i class="bi bi-plus-lg me-2"></i>Crear tarea
+            </button>
+        </div>
+    </div>
+
+    <div id="modal" class="modal fade">
+        <div id="dialog" class="modal-dialog" hx-target="this"></div>
+    </div>
+
+    <script src="{% static 'main/js/modal.js' %}"></script>
+
+{% endblock card_body %}

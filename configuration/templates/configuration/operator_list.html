@@ -1,0 +1,44 @@
+{% load static %}
+
+<table class="table table-striped" id="search-results">
+    {% if operator_list %}
+        <thead>
+            <tr class="dark">
+                <td scope="col">Usuario</td>
+                <td scope="col">Nombre y apellido</td>
+                <td scope="col" class="text-center">Activo</td>
+                <td scope="col" class="text-center" style="width: 10%;">Acciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for operator in operator_list %}
+                    <tr>
+                        <td>{{ operator.user.username }}</td>
+                        <td>{{ operator }}</td>
+                        <td class="text-center">
+                            <i
+                            {% if operator.user.is_active %}
+                                class="bi bi-check-circle-fill" style="color: var(--bs-success);"
+                            {% else %}
+                                class="bi bi-x-circle-fill" style="color: var(--bs-danger);"
+                            {% endif %}
+                            ></i>
+                        </td>
+                    <td class="text-center">
+                        <a href="{% url 'operator_detail' operator.pk %}" class="text-decoration-none me-1 eye"
+                        data-bs-toggle="tooltip" data-bs-title="Detalle">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    {% elif search_input and not operator_list %}
+        <p class="m-2">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            No se encontraron coincidencias para la búsqueda realizada.
+        </p>
+    {% endif %}
+</table>
+
+<script src="{% static 'main/js/tooltips.js' %}"></script>

@@ -1,0 +1,45 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+<form hx-post="{{ request.path }}" class="modal-content" novalidate autocomplete="off">
+    <div class="modal-header">
+        <h1 class="fw-bold modal-title fs-5">
+            {% if task %}
+                Modificar
+            {% else %}
+                Nuevo
+            {% endif %}
+                impuesto
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.name.label_tag }}
+                {% render_field form.name class="form-control" %}
+                <div class="invalid-feedback">
+                    {{ form.name.errors|first }}
+                </div>
+            </div>
+        </div>
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.percentage.label_tag }}
+                {% render_field form.percentage class="form-control" min="0" %}
+                <div class="invalid-feedback">
+                    {{ form.percentage.errors|first }}
+                </div>
+            </div>
+        </div>
+        <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary m-1" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-outline-success m-1">
+            <i class="bi bi-check2 me-2"></i>Guardar
+        </button>
+    </div>
+</form>
+
+{% endwith %}

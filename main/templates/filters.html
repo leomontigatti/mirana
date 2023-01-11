@@ -20,6 +20,9 @@
                         <li name="{{ key }}" id="{{ object.0 }}" class="text-muted ms-1">
                             {{ object.1 }}
                         </li>
+                        <a href="#" hx-get={% url 'service_type_list' option=key value=object.0 %}>
+                            {{ object.1 }}
+                        </a>
                     {% else %}
                         <li name="{{ key }}" id="{{ object.id }}" class="text-muted ms-1">
                             {{ object }}

@@ -1,0 +1,31 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+<tr>
+    <td>
+        {% render_field form.service_type class="form-select" %}
+        <div class="invalid-feedback">
+            {{ form.service_type.errors|first }}
+        </div>
+    </td>
+    <td>
+        {% render_field form.amount class="form-control text-center" onchange="calculateSubtotal()" %}
+        <div class="invalid-feedback">
+            {{ form.amount.errors|first }}
+        </div>
+    </td>
+    <td>
+        {% render_field form.unitario class="form-control text-center" min="0" onchange="calculateSubtotal()" %}
+        <div class="invalid-feedback">
+            {{ form.unitario.errors|first }}
+        </div>
+    </td>
+    <td>
+        {% render_field form.service_subtotal class="form-control text-center" readonly="true" %}
+        <div class="invalid-feedback">
+            {{ form.service_subtotal.errors|first }}
+        </div>
+    </td>
+</tr>
+
+{% endwith %}

@@ -1,21 +1,48 @@
+import json
 from calendar import LocaleHTMLCalendar
 from datetime import date
 
 from decouple import config
-
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core import serializers
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.utils.safestring import mark_safe
 from django.views.generic.base import ContextMixin
 
-from income.models import Customer, Receipt
+from configuration.models import Operator
+from income.models import Customer, Hiring
 from inventory.models import Warehouse
-from main.forms import UserLoginForm
 
 
-class CustomContextMixin(ContextMixin):
+def is_operator(user):
+    """
+    Check if the :model:`auth.User` is an Operator instance.
+    """
+    try:
+        user.operator
+        return True
+    except ObjectDoesNotExist:
+        return False
+
+
+class CustomContextMixin(LoginRequiredMixin, UserPassesTestMixin, ContextMixin):
+    """
+    Check if the :model:`auth.User` is authenticated and if it's superuser or operator.
+    """
+
+    def test_func(self):
+        user = self.request.user
+        if is_operator(user):
+            return False
+        return True
+
+    def handle_no_permission(self):
+        messages.warning(self.request, "No tenés permisos para realizar esa acción.")
+        return redirect("home")
+
     def get_context_data(self, **kwargs):
         request_path = self.request.path.strip("/").split("/")
         extra_context = {
@@ -37,25 +64,30 @@ class CustomHTMLCalendar(LocaleHTMLCalendar):
 
 @login_required
 def home(request):
-    """
-    Redirect the :model:`auth.User` depending on its type.
-    **Context:**
-    ``app``
-        The app name for the html title.
-    **Template:**
-    :template:`home.html`.
-    """
-
-    calendar = CustomHTMLCalendar(locale="es_AR").formatmonth()
-    extra_context = {
-        "app": "home",
-        "calendar": mark_safe(calendar),
-        "today": date.today().day,
-    }
-
     if request.user.is_superuser:
         return redirect(reverse_lazy("admin:index"))
-    return render(request, "home.html", extra_context)
+    elif is_operator(request.user):
+        context = {
+            "app": "operator_home",
+            # "operator_tasks": OperatorTask.objects.filter(
+            #     operator=request.user.operator,
+            #     # date=timezone.now().date(),
+            # )
+        }
+        return render(request, "operator_home.html", context)
+    else:
+        # hiring_coords = [hiring.location for hiring in Hiring.objects.all()]
+        # print(json.dumps(hiring_coords))
+        hiring_json = serializers.serialize(
+            "json", Hiring.objects.all(), fields=("location")
+        )
+        context = {
+            "app": "home",
+            "coords": "(-31.420972762427905, -64.49906945228577)",
+            "maps_api_key": config("MAPS_API_KEY"),
+            "hiring_json": hiring_json,
+        }
+        return render(request, "home.html", context)
 
 
 @login_required
@@ -75,17 +107,10 @@ def get_location(request, pk):
         coords = Customer.objects.get(pk=pk).location
     elif request_path[0] == "warehouse":
         coords = Warehouse.objects.get(pk=pk).location
-    else:
-        coords = Receipt.objects.get(pk=pk).location
+    # else:
+    #     coords = Receipt.objects.get(pk=pk).location
     context = {
         "coords": coords,
         "maps_api_key": config("MAPS_API_KEY"),
     }
     return render(request, "get_location.html", context)
-
-
-class UserLogin(LoginView):
-
-    success_url = "home"
-    form_class = UserLoginForm
-    extra_context = {"app": "login"}

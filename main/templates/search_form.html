@@ -1,12 +1,11 @@
-<form method="get" class="mb-3">
+{% load extra_tags %}
+
+<form method="post" class="mb-3">
+    {% csrf_token %}
     <div class="row gx-2">
         <div class="col-sm">
-            <div class="input-group">
-                <input type="text" name="search_input" class="form-control" value="{{ search_input }}" placeholder="{{ search_text }}">
-                <button type="submit" class="btn btn-outline-secondary">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
+            <input type="search" name="search_input" class="form-control" value="{{ search_input }}" placeholder="{{ search_text }}"
+            hx-post="{% url model|add:'_list' %}" hx-trigger="keyup changed delay:500ms, search" hx-target="#search-results">
         </div>
     </div>
 </form>

@@ -1,0 +1,86 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block card_body %}
+
+    {% if receipt_list and not user|is_operator %}
+        <form method="get" >
+            <div class="row gx-2">
+                <div class="col-sm-8">
+                    <label class="text-muted m-2" for="receipt-select">Comprobante</label>
+                    <select name="receipt" id="receipt-select" class="form-select" onchange="this.form.submit()">
+                        <option value=""> --------- </option>
+                        {% for receipt in receipt_list %}
+                            <option value="{{ receipt.id }}">{{ receipt }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+    {% endif %}
+
+    <form method="post" class="needs-validation" id="{{ model }}_form" novalidate autocomplete="off">
+        {% csrf_token %}
+        <div class="row gx-2 justify-content-between">
+            {% if form.instance.id %}
+                <div class="col-sm-3">
+                    <label class="text-muted m-2" for="id_id">Número de recibo</label>
+                    <input type="text" name="id" value="{% if form.instance.id %}{{ form.instance.id }}{% else %}-{% endif %}" id="id_id" class="form-control noinput">
+                </div>
+            {% endif %}
+            <div class="col-sm-3">
+                {{ form.issue_date.label_tag }}
+                {{ form.issue_date }}
+            </div>
+        </div>
+
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.customer.label_tag }}
+                {{ form.customer }}
+            </div>
+        </div>
+
+        <div class="row gx-2">
+            {% if not user|is_operator %}
+                <div class="col-sm">
+                    {{ form.option.label_tag }}
+                    {{ form.option }}
+                </div>
+                <div class="col-sm visually-hidden" id="method-select">
+                    {{ form.method.label_tag }}
+                    {{ form.method }}
+                </div>
+            {% endif %}
+            <div class="col-sm visually-hidden" id="amount-input">
+                {{ form.amount.label_tag }}
+                {{ form.amount }}
+            </div>
+        </div>
+
+        {{ form.receipt }}
+        <br>
+        <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
+
+        <div class="row gx-2 text-center justify-content-center">
+            <div class="col-sm">
+                <a href="{% url model|add:'_list' %}" class="btn btn-outline-secondary m-1">
+                    <i class="bi bi-arrow-return-left me-2"></i>Volver
+                </a>
+                <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="modal" data-bs-target="#createModal">
+                    Guardar
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {% include 'create_modal.html' %}
+
+    <script>
+        const instanceId = "{{ form.instance.id }}"
+        const userIsOperator = "{{ user|is_operator }}"
+    </script>
+
+    <script src="{% static 'income/js/payment_form.js' %}"></script>
+
+{% endblock card_body %}

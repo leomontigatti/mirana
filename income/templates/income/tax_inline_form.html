@@ -1,0 +1,19 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+<tr name="tax-row">
+    <td style="width: 50%;">
+        {% render_field form.tax_type class="form-select" onchange="calculateTax()" %}
+        <div class="invalid-feedback">
+            {{ form.tax_type.errors|first }}
+        </div>
+    </td>
+    <td>
+        {% render_field form.tax_subtotal class="form-control text-center" readonly="true" %}
+        <div class="invalid-feedback">
+            {{ form.tax_subtotal.errors|first }}
+        </div>
+    </td>
+</tr>
+
+{% endwith %}

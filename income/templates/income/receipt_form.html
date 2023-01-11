@@ -1,222 +1,250 @@
-{% extends 'card.html' %}
-{% load static extra_tags %}
+{% load static widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
 
-{% block card_body %}
-
-    {% if receipt_list %}
-        <form method="get" >
-            <div class="row gx-2">
-                <div class="col-sm-8">
-                    <label class="m-2" for="id_receipt">{{ receipt_type|lower|to_spanish|title }}</label>
-                    <select name="receipt" id="id_receipt" class="form-select" onchange="this.form.submit()">
-                        <option value=""> --------- </option>
-                        {% for receipt in receipt_list %}
-                            <option value="{{ receipt.id }}">{{ receipt }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </div>
-        </form>
-    {% endif %}
-
-    <form method="post" class="needs-validation" id="{{ model }}_form" novalidate autocomplete="off">
-        {% csrf_token %}
-        <div class="row gx-2 justify-content-between">
-            <div class="col-sm-3">
-                <label class="m-2" for="id_id">ID N&deg;</label>
-                <input type="text" name="id" value="{% if form.instance.id %}{{ form.instance.id }}{% else %}-{% endif %}" id="id_id" readonly class="form-control noinput">
-            </div>
-            <div class="col-sm-3">
-                {{ form.issue_date.label_tag }}
-                {{ form.issue_date }}
-            </div>
-            <div class="col-sm-3 {% if not model == 'invoice' %}visually-hidden{% endif %}">
-                {{ form.sale_term.label_tag }}
-                {{ form.sale_term }}
-            </div>
-            <div class="col-sm-3 {% if not model == 'invoice' %}visually-hidden{% endif %}">
-                {{ form.due_date.label_tag }}
-                {{ form.due_date }}
-            </div>
-        </div>
-
-        <div class="row gx-2 align-items-end">
-            <div class="col-sm-8">
-                {{ form.customer.label_tag }}
-                {{ form.customer }}
-            </div>
-            {% if not form.instance.id %}
-                <div class="col-sm text-center mt-2">
-                    <a href="{% url 'customer_create' %}" class="btn btn-outline-primary">
-                        <i class="bi bi-plus-lg me-2"></i>Nuevo cliente
-                    </a>
-                </div>
-            {% endif %}
-        </div>
-
+<form hx-post="{{ request.path }}" novalidate autocomplete="off">
+    {% csrf_token %}
+    {% if not object %}
         <div class="row gx-2">
-            <div class="col-sm-8">
-                {{ form.address.label_tag }}
-                <div class="input-group">
-                    {{ form.address }}
-                    <a class="btn btn-outline-secondary"
-                    onclick="window.open(`{% url 'render_map' %}`, 'newwindow', 'width=700, height=450'); return false">
-                        <i class="bi bi-search"></i>
-                    </a>
+            <div class="col-sm">
+                {{ form.budget.label_tag }}
+                {% render_field form.budget class="form-select" hx-get="/hiring/create/" %}
+                <div class="invalid-feedback">
+                    {{ form.budget.errors|first }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    <div class="row gx-2 justify-content-between">
+        {% if object %}
+            <div class="col-sm">
+                <label class="text-muted m-2" for="id_id">Número</label>
+                <input type="text" name="id" value="{{ object.id }}" id="id_id" readonly class="form-control">
+            </div>
+        {% endif %}
+        {% if not model == "hiring" %}
+            <div class="col-sm">
+                {{ form.issue_date.label_tag }}
+                {% render_field form.issue_date class="form-control" readonly="" %}
+                <div class="invalid-feedback">
+                    {{ form.issue_date.errors|first }}
                 </div>
             </div>
             <div class="col-sm">
-                {{ form.phone_number.label_tag }}
-                {{ form.phone_number }}
-            </div>
-        </div>
-
-        {% if model == "hiring" %}
-            <div class="row gx-2 mt-2 ms-2">
-                <div class="col-sm-2">
-                    {{ form.is_placed }}
-                    {{ form.is_placed.label_tag }}
+                {{ form.sale_term.label_tag }}
+                {% render_field form.sale_term class="form-select" %}
+                <div class="invalid-feedback">
+                    {{ form.sale_term.errors|first }}
                 </div>
-                <div class="col-sm-2">
-                    {{ form.is_clean }}
-                    {{ form.is_clean.label_tag }}
+            </div>
+            <div class="col-sm">
+                {{ form.due_date.label_tag }}
+                {% render_field form.due_date class="form-control" %}
+                <div class="invalid-feedback">
+                    {{ form.due_date.errors|first }}
+                </div>
+            </div>
+        {% else %}
+            <div class="col-sm">
+                {{ form.start_date.label_tag }}
+                {% render_field form.start_date class="form-control" %}
+                <div class="invalid-feedback">
+                    {{ form.start_date.errors|first }}
+                </div>
+            </div>
+            <div class="col-sm">
+                {{ form.end_date.label_tag }}
+                {% render_field form.end_date class="form-control" %}
+                <div class="invalid-feedback">
+                    {{ form.end_date.errors|first }}
                 </div>
             </div>
         {% endif %}
+    </div>
+    <div class="row gx-2 align-items-end">
+        <div class="col-sm">
+            {{ form.customer.label_tag }}
+            {% render_field form.customer class="form-select" %}
+            <div class="invalid-feedback">
+                {{ form.customer.errors|first }}
+            </div>
+        </div>
+        {% if not object %}
+            <div class="d-grid col-sm-2 text-center mt-3">
+                <button type="button" class="btn btn-outline-primary" hx-get="{% url 'receipt_customer_create' %}" hx-target="#dialog">
+                    <i class="bi bi-plus-lg me-2"></i>Nuevo cliente
+                </button>
+            </div>
+        {% endif %}
+    </div>
+    <div class="row gx-2">
+        <div class="col-sm-8">
+            {{ form.address.label_tag }}
+            <div class="input-group">
+                {% render_field form.address class="form-control" readonly="" %}
+                <a class="btn btn-outline-secondary"
+                onclick="window.open(`{% url 'render_map' %}`, 'newwindow', 'width=700, height=450'); return false">
+                    <i class="bi bi-search"></i>
+                </a>
+            </div>
+        </div>
+        <div class="col-sm">
+            {{ form.phone_number.label_tag }}
+            {% render_field form.phone_number class="form-control" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Código de area sin 0 y número sin 15." %}
+            <div class="invalid-feedback">
+                {{ form.phone_number.errors|first }}
+            </div>
+        </div>
+    </div>
 
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <td scope="col" style="width: 40vw;">Producto</td>
-                        <td scope="col" class="text-center">Cantidad</td>
-                        <td scope="col" class="text-center">Unitario</th>
-                        <td scope="col" class="text-center">Subtotal</th>
-                        <td scope="col" class="text-center"></th>
-                    </tr>
-                </thead>
-                <tbody class="table-group-divider" id="products-table" name="products-table">
-                    {% for form in product_formset.forms %}
-                        <tr>
-                            <td>{{ form.product_type }}</td>
-                            <td>{{ form.amount }}</td>
-                            <td>{{ form.unitario }}</td>
-                            <td>{{ form.subtotal }}</td>
-                            <td class="align-middle text-center">
-                                {{ form.DELETE }}
-                                {{ form.receipt }}
-                                {{ form.id }}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    {% if not model == "hiring" %}
+        <div class="row gx-2 mt-3">
+            <div class="col-sm">
+                <div class="table-responsive">
+                    <table class="table mt-3">
+                        <thead>
+                            <tr class="dark">
+                                <td scope="col" class="text-center" style="width: 60%;">Servicio</td>
+                                <td scope="col" class="text-center">Cantidad</td>
+                                <td scope="col" class="text-center">Unitario</th>
+                                <td scope="col" class="text-center">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="service-table">
+                            {% if service_list %}
+                                {% for service in service_list %}
+                                    <div hx-get="{% url 'service_update' service.pk %}" hx-trigger="load" hx-target="#service-table" hx-swap="beforeend"></div>
+                                {% endfor %}
+                            {% else %}
+                                <div hx-get="{% url 'service_create' %}" hx-trigger="load" hx-target="#service-table" hx-swap="beforeend"></div>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
         <div class="row gx-2 text-center justify-content-center m-2">
             <div class="col-sm">
-                <a id="add-product" class="btn btn-outline-primary">
-                    <i class="bi bi-plus-lg me-2"></i>Agregar producto
-                </a>
+                <button class="btn btn-outline-primary" hx-get="{% url 'service_create' %}" hx-target="#service-table" hx-swap="beforeend">
+                    <i class="bi bi-plus-lg me-2"></i>Agregar servicio
+                </button>
             </div>
         </div>
 
-        <div class="row gx-2">
+        <div class="row gx-4">
             <div class="col-sm-6">
                 {{ form.notes.label_tag }}
-                {{ form.notes }}
+                {% render_field form.notes class="form-control" rows="4" placeholder="Piso, número de departamento u otras aclaraciones." %}
             </div>
             <div class="col-sm">
-                <div class="row gx-2">
-                    <div class="col-sm m-2">
-                        Subtotal
+                <div class="row gx-2 mt-2 pt-2">
+                    <div class="col-sm text-muted my-auto">
+                        <span class="ms-2">Subtotal</span>
                     </div>
                     <div class="col-sm">
-                        {{ form.subtotal }}
+                        {% render_field form.subtotal class="form-control text-center" readonly="" %}
+                        <div class="invalid-feedback">
+                            {{ form.subtotal.errors|first }}
+                        </div>
                     </div>
                 </div>
-                <label class="m-2" for="id_taxes">Impuestos</label>
-                {% for form in tax_formset.forms %}
-                    <div class="row gx-2 m-1" name="taxes-row">
-                        <div class="col-sm">
-                            {{ form.tax_type }}
-                        </div>
-                        <div class="col-sm">
-                            {{ form.subtotal }}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="row gx-2 justify-content-end">
-            <div class="col-sm-6">
-                <hr>
-                <div class="row gx-2">
-                    <div class="col-sm m-2">
-                        Total
+                <div class="row mt-2">
+                    <label class="ms-2 text-muted" for="id_taxes">
+                        Impuestos
+                        <a href="#" hx-get="{% url 'tax_create' %}" hx-target="#tax-list" hx-swap="beforeend"
+                        data-bs-toggle="tooltip" data-bs-title="Agregar impuesto" class="plus">
+                            <i class="bi bi-plus-circle ms-2"></i>
+                        </a>
+                    </label>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless mb-1">
+                        <tbody id="tax-list">
+                            {% if tax_list %}
+                                {% for tax in tax_list %}
+                                    <div hx-get="{% url 'tax_update' tax.pk %}" hx-trigger="load" hx-target="#tax-list" hx-swap="beforeend"></div>
+                                {% endfor %}
+                            {% else %}
+                                <div hx-get="{% url 'tax_create' %}" hx-trigger="load" hx-target="#tax-list" hx-swap="beforeend"></div>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row gx-2 border-top pt-2">
+                    <div class="col-sm text-muted my-auto fw-bold">
+                        <span class="ms-2">Total</span>
                     </div>
                     <div class="col-sm">
-                        {{ form.total }}
+                        {% render_field form.total class="form-control text-center" readonly="" %}
+                        <div class="invalid-feedback">
+                            {{ form.total.errors|first }}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        {% if model == "invoice" %}
-            <div class="row gx-2">
-                <div class="col-sm-6">
-                    {{ form.cai.label_tag }}
-                    {{ form.cai }}
-                </div>
-            </div>
-        {% endif %}
-
-        {{ form.location }}
-        {{ product_formset.management_form }}
-        {{ tax_formset.management_form }}
-
-        <div id="empty-formset" hidden>
-            <table>
-                {{ product_formset.empty_form.as_table }}
-            </table>
-        </div>
-
-        <br>
-        <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
-
-        <div class="row gx-2 text-center justify-content-center">
+    {% else %}
+        <div class="row gx-2 mt-3">
             <div class="col-sm">
-                <a href="{% url model|add:'_list' %}" class="btn btn-outline-secondary m-1">
-                    <i class="bi bi-arrow-return-left me-2"></i>Volver
-                </a>
-                {% if form.instance.id %}
-                    <button type="button" class="btn btn-outline-danger m-1" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        Borrar
-                    </button>
-                {% endif %}
-                <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="modal" data-bs-target="#createModal">
-                    Guardar
+                <div class="table-responsive">
+                    <table class="table mt-3">
+                        <thead>
+                            <tr class="dark">
+                                <td scope="col" class="text-center" style="width: 40%;">Descripción</td>
+                                <td scope="col" class="text-center">Frecuencia</td>
+                                <td scope="col" class="text-center">Operario</th>
+                                <td scope="col" class="text-center">Prioridad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="task-table">
+                            {% if task_list %}
+                                {% for task in task_list %}
+                                    <div hx-get="{% url 'task_inline_update' task.pk %}" hx-trigger="load" hx-target="#task-table" hx-swap="beforeend"></div>
+                                {% endfor %}
+                            {% else %}
+                                <div hx-get="{% url 'task_inline_create' %}" hx-trigger="load" hx-target="#task-table" hx-swap="beforeend"></div>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="row gx-2 text-center justify-content-center m-2">
+            <div class="col-sm">
+                <button class="btn btn-outline-primary" hx-get="{% url 'task_inline_create' %}" hx-target="#task-table" hx-swap="beforeend">
+                    <i class="bi bi-plus-lg me-2"></i>Agregar tarea
                 </button>
-                {% if model == "invoice" %}
-                    <a href="#" type="button" class="btn btn-outline-info m-1">
-                        <i class="bi bi-receipt me-2"></i>Facturar
-                    </a>
-                {% endif %}
             </div>
         </div>
-    </form>
 
-    {% include 'create_modal.html' %}
-
-    {% if form.instance.id %}
-        {% include 'delete_modal.html' %}
+        {% render_field form.is_clean class="visually-hidden" %}
+        {% render_field form.is_placed class="visually-hidden" %}
+        {% render_field form.notes class="visually-hidden" %}
     {% endif %}
 
-    <script>
-        const instanceId = "{{ form.instance.id }}"
-    </script>
 
-    <script src="{% static 'income/js/form.js' %}"></script>
+    {% render_field form.location class="visually-hidden" %}
+    <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
 
-{% endblock card_body %}
+    <div class="row gx-2 text-center justify-content-center m-2">
+        <div class="col-sm">
+            <a href="{% url model|add:'_index' %}" class="btn btn-outline-secondary m-1">
+                <i class="bi bi-arrow-return-left me-2"></i>Volver
+            </a>
+            <button type="submit" class="btn btn-outline-success">
+                <i class="bi bi-check2 me-2"></i>Guardar
+            </button>
+        </div>
+    </div>
+</form>
+
+<div id="modal" class="modal fade">
+    <div id="dialog" class="modal-dialog" hx-target="this"></div>
+</div>
+
+<script src="{% static 'income/js/form.js' %}"></script>
+<script src="{% static 'main/js/modal.js' %}"></script>
+<script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endwith %}

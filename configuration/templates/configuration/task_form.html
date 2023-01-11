@@ -1,0 +1,75 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+<form hx-post="{{ request.path }}" class="modal-content" novalidate autocomplete="off">
+    <div class="modal-header">
+        <h1 class="fw-bold modal-title fs-5">
+            {% if task %}
+                Modificar
+            {% else %}
+                Nueva
+            {% endif %}
+                tarea
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.priority.label_tag }}
+                {% render_field form.priority class="form-select" %}
+            </div>
+        </div>
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.description.label_tag }}
+                {% render_field form.description class="form-control" %}
+            </div>
+        </div>
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.start_date.label_tag }}
+                {% render_field form.start_date class="form-control" %}
+                <div class="invalid-feedback">
+                    {{ form.start_date.errors|first }}
+                </div>
+            </div>
+        </div>
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.end_date.label_tag }}
+                {% render_field form.end_date class="form-control" %}
+                <div class="invalid-feedback">
+                    {{ form.end_date.errors|first }}
+                </div>
+            </div>
+        </div>
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.frequency.label_tag }}
+                {% render_field form.frequency class="form-select" %}
+            </div>
+        </div>
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.operator.label_tag }}
+                {% render_field form.operator class="form-select" %}
+            </div>
+        </div>
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.hiring.label_tag }}
+                {% render_field form.hiring class="form-select" %}
+            </div>
+        </div>
+        <p class="m-2">Todos los campos marcados con <span class="required-field">*</span> son requeridos.</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary m-1" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-outline-success m-1">
+            <i class="bi bi-check2 me-2"></i>Guardar
+        </button>
+    </div>
+</form>
+
+{% endwith %}

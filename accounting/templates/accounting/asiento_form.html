@@ -1,0 +1,47 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+<form hx-post="{{ request.path }}" class="modal-content" novalidate autocomplete="off">
+    <div class="modal-header">
+        <h1 class="fw-bold modal-title fs-5">
+                Nuevo asiento manual
+        </h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <div class="col-sm input-group">
+            <div class="input-group-text">Fecha de creación</div>
+            <input type="text" class="form-control noinput" value="{% now "SHORT_DATE_FORMAT" %}" readonly>
+        </div>
+        <div class="table-responsive">
+            <table class="table mt-3">
+                <thead>
+                    <tr class="dark">
+                        <td scope="col" style="width: 60%;">Cuenta</td>
+                        <td scope="col" class="text-center">Debe</td>
+                        <td scope="col" class="text-center">Haber</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider" id="entry-table">
+                    <div hx-get="{% url 'entry_create' %}" hx-trigger="load" hx-target="#entry-table" hx-swap="beforeend"></div>
+                    <div hx-get="{% url 'entry_create' %}" hx-trigger="load" hx-target="#entry-table" hx-swap="beforeend"></div>
+                </tbody>
+            </table>
+        </div>
+        <div class="row gx-2 text-center justify-content-center m-2">
+            <div class="col-sm">
+                <button class="btn btn-outline-primary" hx-get="{% url 'entry_create' %}" hx-target="#entry-table" hx-swap="beforeend">
+                    <i class="bi bi-plus-lg me-2"></i>Agregar entrada
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary m-1" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-outline-success m-1">
+            <i class="bi bi-check2 me-2"></i>Guardar
+        </button>
+    </div>
+</form>
+
+{% endwith %}

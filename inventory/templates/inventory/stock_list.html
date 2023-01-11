@@ -1,31 +1,48 @@
-{% extends 'card.html' %}
-{% load static extra_tags %}
+{% load static %}
 
-{% block list_body %}
-
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr class="dark">
-                    <td scope="col">Código</td>
-                    <td scope="col">Nombre</td>
-                    <td scope="col">Depósito</td>
-                    <td scope="col" class="text-center">Cantidad</td>
+<table class="table table-striped">
+    {% if stock_list %}
+        <thead>
+            <tr class="dark">
+                <td scope="col">Producto</td>
+                <td scope="col">Depósito</td>
+                <td scope="col" class="text-center">Cantidad</td>
+                <td scope="col" class="text-center" style="width: 10%;">Acciones</td>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            {% for stock in stock_list %}
+                <tr>
+                    <td>{{ stock.product }}</td>
+                    <td>
+                        {% if stock.warehouse %}
+                            {{ stock.warehouse }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="text-center">{{ stock.amount }}</td>
+                    <td class="text-center">
+                        <a href="#" hx-get="{% url 'stock_update' stock.pk %}"
+                        hx-target="#dialog" class="text-decoration-none me-1 pencil"
+                        data-bs-toggle="tooltip" data-bs-title="Modificar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="#" hx-get="{% url 'stock_delete' stock.pk %}"
+                        hx-target="#dialog" class="text-decoration-none text-danger me-1 delete"
+                        data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                {% for object in object_list %}
-                    <tr>
-                        <td>{{ object.producttype.reference_code }}</td>
-                        <td>
-                            <a href="{% url model|add:'_update' object.id %}" class="text-decoration-none">{{ object.producttype }}</a>
-                        </td>
-                        <td>{{ object.warehouse.name }}</td>
-                        <td class="text-center">{{ object.amount }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+            {% endfor %}
+        </tbody>
+    {% else %}
+        <p class="m-2">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            Todavía no se creó un stock. Podés empezar haciendo click <a href="#" class="text-decoration-none" hx-get="{% url 'stock_create' %}" hx-target="#dialog">acá</a>.
+        </p>
+    {% endif %}
+</table>
 
-{% endblock list_body %}
+<script src="{% static 'main/js/tooltips.js' %}"></script>

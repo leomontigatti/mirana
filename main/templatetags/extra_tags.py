@@ -1,4 +1,5 @@
 from django import template
+from django.core.exceptions import ObjectDoesNotExist
 
 register = template.Library()
 
@@ -13,21 +14,28 @@ def to_spanish(obj):
         "detail": "detalle",
         "update": "modificar",
         "accounting": "contabilidad",
-        "taxtype": "tipo de impuesto",
+        "tax_type": "impuesto",
         "cuenta": "cuenta",
         "income": "ingresos",
         "customer": "cliente",
-        "situacion_iva": "situación frente IVA",
+        "iva_situation": "situación frente IVA",
         "identification_type": "tipo de identificación",
         "budget": "presupuesto",
         "hiring": "contratación",
         "invoice": "factura",
+        "income_payment": "recibo de cobro",
         "inventory": "inventario",
-        "category": "categoría",
-        "producttype__category": "categoría",
-        "producttype": "producto",
         "warehouse": "depósito",
         "stock": "stock",
+        "is_active": "estado",
+        "configuration": "configuración",
+        "operator": "operario",
+        "task": "tarea",
+        "operator_task": "tarea",
+        "configuration": "configuración",
+        "payment_method": "forma de pago",
+        "asiento": "asiento manual",
+        "service_type": "servicio",
     }
     return LABELS.get(obj)
 
@@ -35,17 +43,21 @@ def to_spanish(obj):
 @register.filter
 def to_spanish_plural(obj):
     LABELS = {
-        "taxtype": "tipos de impuesto",
+        "tax_type": "impuestos",
         "cuenta": "cuentas contables",
         "customer": "clientes",
         "budget": "presupuestos",
         "hiring": "contrataciones",
         "invoice": "facturas",
+        "income_payment": "recibos de cobro",
         "category": "categorías",
-        "producttype__category": "categorías",
-        "producttype": "productos",
         "warehouse": "depósitos",
-        "stock": "stocks",
+        "stock": "stock",
+        "task": "tareas",
+        "operator": "operarios",
+        "payment_method": "formas de pago",
+        "service_type": "servicios",
+        "asiento": "libro diario",
     }
     return LABELS.get(obj)
 
@@ -58,3 +70,12 @@ def verbose_name_plural(obj):
 @register.filter
 def get_class(obj):
     return obj.__class__.__name__
+
+
+@register.filter
+def is_operator(obj):
+    try:
+        obj.operator
+        return True
+    except ObjectDoesNotExist:
+        return False

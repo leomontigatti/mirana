@@ -3,43 +3,28 @@
 
 {% block content %}
 
-    <link rel="stylesheet" href="{% static 'main/css/global.css' %}">
-
     <div class="d-flex gx-2 py-3 justify-content-between">
-        {% if page == "list" %}
-            <div>
-                <h3 class="m-2 text-muted">{{ page|to_spanish|title }} {{ model|to_spanish_plural }}</h3>
-            </div>
-            <div class="align-self-center text-end">
-                <a href="{% url model|add:'_create' %}" class="btn btn-outline-primary">
-                    <i class="bi bi-plus-lg me-2"></i>Crear {{ model|to_spanish }}
-                </a>
-            </div>
-        {% else %}
-            <div class="flex-grow-1 border-bottom">
-                <h3 class="p-2 text-muted">{{ page|to_spanish|title }} {{ model|to_spanish }}</h3>
-            </div>
-        {% endif %}
+        {% block card_title %}
+        {% endblock card_title %}
     </div>
 
-    <div class="row gx-3 py-0">
+    <div class="row gx-2 py-0">
         <div class="col-sm">
-            {% if page == "list" %}
+            {% if search_text %}
                 {% include 'search_form.html' %}
-                {% if search_input or filter_options and not object_list.exists %}
-                    <p class="m-2">
-                        <i class="bi bi-exclamation-circle me-1"></i>
-                        No existen coincidencias para la búsqueda realizada. <a href="{% url model|add:'_list' %}">Limpiar búsqueda</a>.
-                    </p>
-                {% elif not object_list.exists %}
-                    <p class="m-2">
-                        <i class="bi bi-exclamation-circle me-1"></i>
-                        No existen {{ model|to_spanish_plural }} creados. Podés empezar haciendo click <a href="{% url model|add:'_create' %}">acá</a>.
-                    </p>
-                {% else %}
-                    {% block list_body %}
-                    {% endblock list_body %}
-                {% endif %}
+            {% else %}
+                <div class="flex-grow-1 border-bottom"></div>
+            {% endif %}
+            {% if search_input and not object_list.exists %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    No existen coincidencias para la búsqueda realizada. <span id="clean-search" class="text-decoration-underline text-primary">Limpiar búsqueda</span>.
+                </p>
+            {% elif filter_options and not object_list.exists %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    No existen coincidencias para la búsqueda realizada. <span id="clean-search" class="text-decoration-underline text-primary">Limpiar búsqueda</span>.
+                </p>
             {% else %}
                 {% block card_body %}
                 {% endblock card_body %}
@@ -50,9 +35,5 @@
             {% include 'filters.html' %}
         {% endif %}
     </div>
-
-    <script src="{% static 'main/js/tooltips.js' %}"></script>
-    <script src="{% static 'main/js/form_validation.js' %}"></script>
-    <script src="{% static 'main/js/localstorage.js' %}"></script>
 
 {% endblock content %}

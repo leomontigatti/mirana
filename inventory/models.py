@@ -1,98 +1,44 @@
+from django.core.validators import StepValueValidator
 from django.db import models
 
 from accounting.models import Cuenta
 
 
-class MeasurementUnitChoices(models.TextChoices):
-    SERVICE = "SERVICE", "Servicio"
-    UNIT = "UNIT", "Unidad"
-    KILOGRAM = "KILOGRAM", "Kilogramo"
-    GRAM = "GRAM", "Gramo"
-    METER = "METER", "Metro"
-    SQUARE_METER = "SQUARE METER", "Metro cuadrado"
-    CUBIC_METER = "CUBIC METER", "Metro cúbico"
-    LITER = "LITER", "Litro"
-    MILLILITER = "MILLILITER", "Mililitro"
-
-
-class Category(models.Model):
+class ServiceType(models.Model):
     """
-    Store a single 'Category' instance.
-    """
-
-    name = models.CharField(
-        verbose_name="Nombre",
-        max_length=200,
-        unique=True,
-    )
-    notes = models.TextField(
-        verbose_name="Notas",
-        max_length=300,
-        blank=True,
-        null=True,
-        help_text="Descripción",
-    )
-    create_date = models.DateTimeField(
-        verbose_name="Fecha de creación",
-        auto_now=True,
-    )
-    change_date = models.DateTimeField(
-        verbose_name="Fecha de modificación",
-        auto_now=True,
-    )
-
-    class Meta:
-        verbose_name = "Categoría"
-        verbose_name_plural = "Categorías"
-        ordering = ("name",)
-
-    def __str__(self):
-        return self.name.title()
-
-
-class ProductType(models.Model):
-    """
-    Store a single 'ProductType' instance, related to :model:`accounting.Cuenta`
-    and :model:`inventory.Warehouse`.
+    Store a single 'service type' instance, related to :model:`accounting.Cuenta`,
+    :model:`inventory.Warehouse` and :model:`inventory.Stock`.
     """
 
     cuenta = models.ForeignKey(
         Cuenta,
-        verbose_name="Cuenta contable",
-        on_delete=models.RESTRICT,
-        related_name="products",
-        limit_choices_to={"subrubro": 29},
+        verbose_name="Cuenta de ventas",
+        on_delete=models.PROTECT,
+        related_name="service_type",
+        limit_choices_to={"subrubro": 28},
+        default=15,
     )
-    name = models.CharField(
-        verbose_name="Nombre",
+    description = models.CharField(
+        verbose_name="Descripción",
         max_length=200,
     )
     reference_code = models.CharField(
         verbose_name="Código de referencia",
         max_length=20,
-        help_text="Código único de indentificación del producto. Máximo 20 caracteres.",
+        help_text="Código único de identificación del producto. Máximo 20 caracteres.",
         unique=True,
     )
-    measurement_unit = models.CharField(
-        verbose_name="Unidad de medida",
-        max_length=20,
-        choices=MeasurementUnitChoices.choices,
-        default=MeasurementUnitChoices.SERVICE,
-    )
-    category = models.ForeignKey(
-        Category,
-        verbose_name="Categoría",
-        on_delete=models.RESTRICT,
-        related_name="products",
+    stock = models.ForeignKey(
+        "Stock",
+        verbose_name="Stock",
+        on_delete=models.PROTECT,
+        related_name="service_type",
         blank=True,
         null=True,
     )
-    description = models.TextField(
-        verbose_name="Descripción",
-        max_length=300,
-        blank=True,
-        null=True,
-        help_text="Descripción.",
+    is_active = models.BooleanField(
+        verbose_name="Activo",
+        default=True,
     )
     create_date = models.DateTimeField(
         verbose_name="Fecha de creación",
@@ -102,18 +48,13 @@ class ProductType(models.Model):
         verbose_name="Fecha de modificación",
         auto_now=True,
     )
-    is_active = models.BooleanField(
-        verbose_name="Activo",
-        default=True,
-    )
 
     class Meta:
-        verbose_name = "Tipo de producto"
-        verbose_name_plural = "Tipos de producto"
-        ordering = ("-change_date",)
+        verbose_name = "Tipo de servicio"
+        verbose_name_plural = "Tipos de servicio"
 
     def __str__(self):
-        return self.name.title()
+        return self.description
 
 
 class Warehouse(models.Model):
@@ -123,7 +64,6 @@ class Warehouse(models.Model):
 
     name = models.CharField(verbose_name="Nombre", max_length=50)
     address = models.CharField(verbose_name="Domicilio", max_length=200)
-    location = models.CharField(verbose_name="Ubicación", max_length=50)
     notes = models.TextField(
         verbose_name="Notas",
         max_length=300,
@@ -150,33 +90,26 @@ class Warehouse(models.Model):
 
 class Stock(models.Model):
     """
-    Store a single 'Stock' instance, related to :model:`inventory.ProductType`
-    and :model:`inventory.Warehouse`.
+    Store a single 'stock' instance, related to :model:`inventory.Warehouse`.
     """
 
+    product = models.CharField(verbose_name="Producto", max_length=200)
     cuenta = models.ForeignKey(
         Cuenta,
         verbose_name="Cuenta de inventario",
-        on_delete=models.RESTRICT,
-        related_name="stocks",
-        limit_choices_to={"subrubro": 10},
-    )
-    producttype = models.ForeignKey(
-        ProductType,
-        verbose_name="Producto",
-        on_delete=models.RESTRICT,
-        related_name="stocks",
-        limit_choices_to={"is_active": True},
+        on_delete=models.PROTECT,
+        related_name="stock",
+        limit_choices_to={"subrubro": 9},
+        default=7,
     )
     warehouse = models.ForeignKey(
         Warehouse,
         verbose_name="Depósito",
-        on_delete=models.RESTRICT,
-        related_name="stocks",
+        on_delete=models.PROTECT,
+        related_name="stock",
     )
-    amount = models.FloatField(
+    amount = models.PositiveIntegerField(
         verbose_name="Cantidad",
-        max_length=20,
         default=0,
     )
     create_date = models.DateTimeField(
@@ -190,12 +123,14 @@ class Stock(models.Model):
 
     class Meta:
         verbose_name = "Stock"
-        verbose_name_plural = "Stocks"
-        ordering = (
-            "producttype",
-            "warehouse",
-            "amount",
-        )
+        verbose_name_plural = "Stock"
+        ordering = ("product", "warehouse", "amount")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["product", "warehouse"],
+                name="stock_uniqueness",
+            )
+        ]
 
     def __str__(self):
-        return f"{self.producttype.name} {self.warehouse.name} {self.amount}"
+        return f"{self.product} - Depósito {self.warehouse} - {self.amount} unidades"

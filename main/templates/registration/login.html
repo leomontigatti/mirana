@@ -11,7 +11,7 @@
 
 {% include 'bootstrap.html' %}
 
-{% include 'title.html' %}
+<title>Cosmos | Acceder</title>
 
 </head>
 
@@ -31,9 +31,9 @@
             <p class="h3 m-3 font-weight-normal">Acceder</p>
 
             <label for="id_username" class="visually-hidden">Nombre de usuario</label>
-            {{ form.username }}
+            <input class="form-control" type="text" name="username" id="id_username" placeholder="Nombre de usuario">
             <label for="id_password" class="visually-hidden">Contraseña</label>
-            {{ form.password }}
+            <input class="form-control" type="password" name="password" id="id_password" placeholder="Contraseña">
 
             <input type="submit" value="Acceder" class="btn btn-outline-primary m-3">
 

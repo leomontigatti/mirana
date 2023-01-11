@@ -1,0 +1,37 @@
+{% load static %}
+
+<table class="table table-striped">
+    {% if task_list %}
+        <thead>
+            <tr class="dark">
+                <td>Tarea</td>
+                <td>Fecha de inicio</td>
+                <td scope="col" class="text-center" style="width: 10%;">Acciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in task_list %}
+                <tr>
+                    <td>{{ task.description}}</td>
+                    <td>{{ task.start_date|date:'SHORT_DATE_FORMAT' }}</td>
+                    <td class="text-center">
+                        <a href="#" hx-get="{% url 'task_update' task.pk %}"
+                        hx-target="#dialog" class="text-decoration-none me-1 pencil"
+                        data-bs-toggle="tooltip" data-bs-title="Modificar">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="#" hx-get="{% url 'task_delete' task.pk %}"
+                        hx-target="#dialog" class="text-decoration-none text-danger me-1 delete"
+                        data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    {% else %}
+        <p class="m-2"><i class="bi bi-exclamation-circle me-2"></i>El operario no tiene tareas asignadas.</p>
+    {% endif %}
+</table>
+
+<script src="{% static 'main/js/tooltips.js' %}"></script>

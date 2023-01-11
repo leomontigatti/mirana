@@ -3,7 +3,7 @@
 
 {% block card_body %}
 
-    <div class="row gx-3 justify-content-between">
+    <div class="row gx-2 justify-content-between">
         <div class="col-sm-3">
             <label class="m-2" for="id_id">ID N&deg;</label>
             <p class="fw-bold m-2">{{ object.id }}</p>
@@ -24,7 +24,7 @@
         {% endif %}
     </div>
 
-    <div class="row gx-3 align-items-end">
+    <div class="row gx-2 align-items-end">
         <div class="col-sm-8">
             <label class="m-2" for="id_customer">Cliente</label>
             <p class="fw-bold m-2">
@@ -37,7 +37,7 @@
         </div>
     </div>
 
-    <div class="row gx-3">
+    <div class="row gx-2">
         <div class="col-sm-8">
             <label class="m-2" for="id_address">Domicilio</label>
             <p class="fw-bold m-2">
@@ -59,7 +59,7 @@
     </div>
 
     {% if model == "hiring" %}
-        <div class="row gx-3 mt-2 ms-2">
+        <div class="row gx-2 mt-2 ms-2">
             <div class="col-sm-2">
                 <i
                 {% if object.is_placed %}
@@ -118,7 +118,7 @@
         </table>
     </div>
 
-    <div class="row gx-3">
+    <div class="row gx-2">
         <div class="col-sm-6">
             <label class="m-2" for="id_notes">Notas</label>
             <p class="fw-bold m-2">
@@ -130,7 +130,7 @@
             </p>
         </div>
         <div class="col-sm">
-            <div class="row gx-3">
+            <div class="row gx-2">
                 <div class="col-sm m-2">
                     Subtotal
                 </div>
@@ -144,7 +144,7 @@
                     <tbody>
                         {% for tax in object.taxes.all %}
                             <tr>
-                                <td class="fw-bold">{{ tax.tax_type }}</td>
+                                <td class="fw-bold">{{ tax.taxtype }}</td>
                                 <td class="fw-bold text-end">{{ tax.subtotal }}</td>
                             </tr>
                         {% endfor %}
@@ -154,10 +154,10 @@
         </div>
     </div>
 
-    <div class="row gx-3 justify-content-end">
+    <div class="row gx-2 justify-content-end">
         <div class="col-sm-6">
             <hr>
-            <div class="row gx-3">
+            <div class="row gx-2">
                 <div class="col-sm m-2">
                     Total
                 </div>
@@ -169,7 +169,7 @@
     </div>
 
     {% if model == "invoice" %}
-        <div class="row gx-3">
+        <div class="row gx-2">
             <div class="col-sm-6">
                 <label class="m-2" for="id_notes">Número de CAI</label>
                 <p class="fw-bold m-2">

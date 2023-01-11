@@ -1,29 +1,40 @@
-{% extends 'card.html' %}
-{% load static extra_tags %}
+{% load static %}
 
-{% block list_body %}
+<table class="table table-striped">
+    {% if warehouse_list %}
+        <thead>
+            <tr class="dark">
+                <td scope="col">Nombre</td>
+                <td scope="col">Domicilio</td>
+                <td scope="col" class="text-center" style="width: 10%;">Acciones</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for warehouse in warehouse_list %}
+            <tr>
+                <td>{{ warehouse.name }}</td>
+                <td>{{ warehouse.address }}</td>
+                <td class="text-center">
+                    <a href="#" hx-get="{% url 'warehouse_update' warehouse.pk %}"
+                    hx-target="#dialog" class="text-decoration-none me-1 pencil"
+                    data-bs-toggle="tooltip" data-bs-title="Modificar">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+                    <a href="#" hx-get="{% url 'warehouse_delete' warehouse.pk %}"
+                    hx-target="#dialog" class="text-decoration-none text-danger me-1 delete"
+                    data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                        <i class="bi bi-trash3"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    {% else %}
+        <p class="m-2">
+            <i class="bi bi-exclamation-circle me-2"></i>
+            Todavía no se creó un depósito. Podés empezar haciendo click <a href="#" class="text-decoration-none" hx-get="{% url 'warehouse_create' %}" hx-target="#dialog">acá</a>.
+        </p>
+    {% endif %}
+</table>
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr class="dark">
-                    <td scope="col" class="text-center">Número</td>
-                    <td scope="col">Nombre</td>
-                    <td scope="col">Domicilio</td>
-                </tr>
-            </thead>
-            <tbody class="table-group-divider">
-                {% for object in object_list %}
-                    <tr>
-                        <td class="text-center">{{ object.id }}</td>
-                        <td>
-                            <a href="{% url model|add:'_update' object.id %}" class="text-decoration-none">{{ object.name }}</a>
-                        </td>
-                        <td>{{ object.address }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-{% endblock list_body %}
+<script src="{% static 'main/js/tooltips.js' %}"></script>

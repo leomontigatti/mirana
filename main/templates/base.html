@@ -1,33 +1,38 @@
+{% load static extra_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+    <head>
 
-    {# Required meta tags #}
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {% include 'bootstrap.html' %}
+        {% include 'bootstrap.html' %}
 
-    {% include 'navbar.html' %}
+        {% include 'navbar.html' %}
 
-    {% include 'title.html' %}
+        <title>Cosmos | {{ app|to_spanish|title }}</title>
 
-</head>
+        <link rel="stylesheet" href="{% static 'main/css/global.css' %}">
 
-<body class="d-flex flex-column min-vh-100">
+    </head>
 
-    {% include 'messages.html' %}
+    <body class="d-flex flex-column min-vh-100" hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'>
 
-    <div class="container-xxl">
+        <div id="messages"></div>
 
-        {% block content %}
-        {% endblock content %}
+        <div class="container-xxl">
 
-    </div>
+            {% block content %}
+            {% endblock content %}
 
-    {% include 'footer.html' %}
+        </div>
 
-</body>
+        {% include 'footer.html' %}
+
+        <script src="{% static 'main/js/alert.js' %}"></script>
+
+    </body>
 
 </html>

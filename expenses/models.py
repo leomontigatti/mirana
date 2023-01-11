@@ -1,12 +1,10 @@
 from django.db import models
-from django.http import HttpResponse
-from django.urls import reverse
 
-from main.models import BaseContact, BaseReceipt
+from main.models import BaseContact
 
 
 class ReceiptTypeChoices(models.TextChoices):
-    PURCHASE_ORDER = "PURCHASE_ORDER", "Órden de compra"
+    PURCHASE_ORDER = "PURCHASE_ORDER", "Orden de compra"
     INVOICE = "INVOICE", "Factura"
 
 
@@ -34,7 +32,7 @@ class Supplier(BaseContact):
     #     super().save(*args, **kwargs)
 
 
-class Receipt(BaseReceipt):
+class Receipt(models.Model):
     """
     Store a single 'Receipt' instance, inherits from :model:`main.BaseReceipt`
     and relates to :model:`income.Supplier`.
@@ -44,7 +42,7 @@ class Receipt(BaseReceipt):
         Supplier,
         verbose_name="Proveedor",
         related_name="receipts",
-        on_delete=models.RESTRICT,
+        on_delete=models.PROTECT,
     )
     receipt_type: str = models.CharField(
         verbose_name="Tipo de comprobante",
@@ -55,7 +53,7 @@ class Receipt(BaseReceipt):
     class Meta:
         verbose_name: str = "Comprobante"
         verbose_name_plural: str = "Comprobantes"
-        ordering: tuple = ("issue_date",)
+        ordering: tuple = ("receipt_type",)
 
     def __str__(self) -> str:
         return f"{self.id} {self.customer}"

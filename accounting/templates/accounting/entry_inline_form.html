@@ -1,0 +1,25 @@
+{% load widget_tweaks %}
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+
+<tr>
+    <td>
+        {% render_field form.cuenta class="form-select" %}
+        <div class="invalid-feedback">
+            {{ form.cuenta.errors|first }}
+        </div>
+    </td>
+    <td>
+        {% render_field form.debe class="form-control" min="0" %}
+        <div class="invalid-feedback">
+            {{ form.debe.errors|first }}
+        </div>
+    </td>
+    <td>
+        {% render_field form.haber class="form-control" min="0" %}
+        <div class="invalid-feedback">
+            {{ form.haber.errors|first }}
+        </div>
+    </td>
+</tr>
+
+{% endwith %}

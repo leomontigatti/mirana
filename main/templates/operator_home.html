@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static extra_tags %}
+
+{% block content %}
+
+    <link rel="stylesheet" href="{% static 'main/css/global.css' %}">
+
+    <div class="d-flex gx-2 py-3 justify-content-between">
+        <div>
+            <h3 class="m-2">Tareas</h3>
+        </div>
+    </div>
+
+    <div class="col-sm">
+        <div class="table-responsive">
+            <table class="table">
+                {% if user|is_operator %}
+                    {% if operator_tasks %}
+                        <thead>
+                            <tr class="dark">
+                                <td>Cliente</td>
+                                <td colspan="2">Tarea (mostrando unicamente las del día de hoy)</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for task in operator_tasks %}
+                                <tr class="{% if task.is_done %}table-success{% elif task.task_type.priority == 3 %}table-danger{% elif task.task_type.priority == 2 %}table-warning{% endif %}">
+                                    <td>{% if task.hiring.customer %}{{ task.hiring.customer }}{% else %}-{% endif %}</td>
+                                    <td>
+                                        <a href="{% url 'operator_task_detail' task.id %}" class="text-decoration-none">{{ task.task_type }}</a>
+                                    </td>
+                                    <td class="text-center" style="width: 10%;">
+                                        <a href="{% url 'toggle_is_done' task.pk %}" data-bs-toggle="tooltip" data-bs-title="Marcar como completa/incompleta">
+                                            {% if not task.is_done %}
+                                                <i class="bi bi-toggle-off"></i>
+                                            {% endif %}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    {% else %}
+                        <p class="m-2"><i class="bi bi-exclamation-circle me-2"></i>No hay tareas asignadas momentáneamente.</p>
+                    {% endif %}
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+{% endblock content %}

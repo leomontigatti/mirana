@@ -1,0 +1,27 @@
+{% extends 'card.html' %}
+{% load static extra_tags %}
+
+{% block card_title %}
+
+    <h3 class="m-2">
+        {% if object %}
+            Modificar
+        {% else %}
+            Crear
+        {% endif %}
+        {{ model|to_spanish }}
+    </h3>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% if object %}
+        <div hx-get="{% url model|add:'_update_form' object.pk %}" hx-trigger="load" hx-target="this"></div>
+    {% else %}
+        <div hx-get="{% url model|add:'_create_form' %}" hx-trigger="load, customerCreated from:body" hx-target="this"></div>
+    {% endif %}
+
+    <script src="{% static 'main/js/modal.js' %}"></script>
+
+{% endblock card_body %}

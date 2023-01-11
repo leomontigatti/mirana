@@ -3,6 +3,11 @@
     color: var(--bs-primary);
 }
 
+.plus:hover .bi-plus-circle:before {
+    content: "\F4F9";
+    color: var(--bs-primary);
+}
+
 .pencil:hover .bi-pencil:before {
     content: "\F4C9";
     color: var(--bs-primary);
@@ -11,6 +16,16 @@
 .geo:hover .bi-geo-alt:before {
     content: "\F3E7";
     color: var(--bs-primary);
+}
+
+.delete:hover .bi-trash3:before {
+    content: "\F78A";
+    color: var(--bs-danger);
+}
+
+.check:hover .bi-check-circle:before {
+    content: "\F26A";
+    color: var(--bs-success);
 }
 
 .whatsapp {
@@ -26,18 +41,22 @@
 }
 
 [readonly] {
-    background-color: var(--bs-gray-200);
+    background-color: rgba(0, 0, 0, 0.05);
     pointer-events: none;
+}
+
+/* input[id*="subtotal"] {
+    background-color: inherit;
 }
 
 input[id*="DELETE"]:checked {
     background: var(--bs-danger);
     border-color: var(--bs-danger);
     --bs-text-opacity: .5;
-}
+} */
 
 .noinput {
-    border: none;
+    /* border: none; */
     font-family: inherit;
     font-size: inherit;
     padding: none;
@@ -91,3 +110,15 @@ form.filters-form li:hover {
 p[name="show-all"]:hover {
     cursor: pointer;
 }
+
+#clean-search:hover {
+    cursor: pointer;
+}
+
+.task-detail:hover {
+    cursor: pointer;
+}
+
+/* body {
+    background-color: blue !important;
+} */
