@@ -1,0 +1,87 @@
+{% extends "card.html" %}
+{% load static widget_tweaks extra_tags %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Detalle tarea</h3>
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Fecha de inicio</span>
+                <span class="form-control">{{ object.start_date|date:"SHORT_DATE_FORMAT" }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Prioridad</span>
+                <span class="form-control fw-bold {% if object.priority == 3 %}text-danger{% elif object.priority == 2%}text-warning{% endif %}">
+                    {{ object.get_priority_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Descripción</span>
+                <span class="form-control">{{ object.description }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Completa</span>
+                {% if object.is_done %}
+                    <span class="form-control text-success fw-bold">Si</span>
+                {% else %}
+                    <span class="form-control text-danger fw-bold">No</i></span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if object.hiring %}
+        <div class="row gx-2">
+            <div class="col-sm">
+                <div class="input-group pb-2">
+                    <span class="input-group-text">Contratación</span>
+                    <span class="form-control">
+                        <a href="{{ object.hiring.get_absolute_url }}"
+                        class="text-decoration-none">
+                            {{ object.hiring }}
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <form method="post" id="task_action">
+        {% csrf_token %}
+
+        <div class="row gx-2">
+            <div class="col-sm">
+                <div class="input-group pb-2">
+                    <span class="input-group-text">{{ form.action.label_tag }}</span>
+                    {% render_field form.action %}
+                    <button class="btn btn-outline-success" type="submit" form="task_action">
+                        Aplicar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="row gx-2 pt-2">
+        {% include "go_back_button.html" %}
+        {% include "update_button.html" %}
+    </div>
+
+{% endblock card_body %}

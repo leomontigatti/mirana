@@ -1,0 +1,54 @@
+{% load static extra_tags widget_tweaks %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        {% include 'bootstrap.html' %}
+
+        <title>Bulldog Servicios | {{ app|to_spanish|title }}</title>
+
+        <link rel="icon" type="image/x-icon" href="{% static 'main/images/bulldog.png' %}">
+        <link rel="stylesheet" href="{% static 'main/css/login.css' %}">
+
+    </head>
+
+    <body class="d-flex flex-column vh-100 py-0">
+
+        {% include 'messages.html' %}
+
+        <div class="container-fluid my-auto text-center">
+
+        {% with WIDGET_ERROR_CLASS='is-invalid' %}
+            <form method="post" class="form-signin" novalidate>
+                {% csrf_token %}
+
+                <img class="mb-4 img-fluid"
+                src="{% static 'main/images/bulldog.png' %}" alt="" width="200">
+
+                <p class="h3 m-3 font-weight-normal">Acceso</p>
+
+                {% render_field form.username class="form-control" placeholder="Nombre de usuario" %}
+                <div class="invalid-feedback">
+                    {{ form.username.errors|first }}
+                </div>
+                {% render_field form.password class="form-control" placeholder="Contraseña" %}
+                <div class="invalid-feedback">
+                    {{ form.password.errors|first }}
+                </div>
+
+                <input type="submit" value="Acceder" class="btn btn-outline-primary m-3">
+            </form>
+        {% endwith %}
+
+        </div>
+
+        {% include 'footer.html' %}
+
+    </body>
+
+</html>

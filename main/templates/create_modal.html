@@ -1,0 +1,39 @@
+{% load extra_tags %}
+
+<div class="modal fade" id="createModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="fw-bold modal-title fs-5" id="createModalLabel">
+                    {% if not object %}
+                        Crear
+                    {% else %}
+                        Modificar
+                    {% endif %}
+                    {{ model|to_spanish }}
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                Estás seguro de
+                {% if not object %}
+                    crear un/a nuevo/a <strong>{{ model|to_spanish }}</strong> <br>
+                {% else %}
+                    modificar: <br>
+                    <strong>{{ object }}</strong> <br>
+                {% endif %}
+                con los datos ingresados?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary me-1"
+                data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-outline-primary"
+                form="{{ model }}_form">
+                    <i class="bi bi-check2 me-2"></i>Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

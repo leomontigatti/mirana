@@ -1,0 +1,213 @@
+{% extends "card.html" %}
+{% load static widget_tweaks %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        {% if object %}
+            <h3 class="m-2 text-muted">Modificar presupuesto</h3>
+            <h3 class="m-2 text-muted">N&deg; {{ object.pk }}</h3>
+        {% else %}
+            <h3 class="m-2 text-muted">Nuevo presupuesto</h3>
+        {% endif %}
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% with WIDGET_ERROR_CLASS="is-invalid" %}
+        <form method="post" autocomplete="off" novalidate id="budget_form" data-model="budget">
+            {% csrf_token %}
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.issue_date.label_tag }}</span>
+                        {% render_field form.issue_date class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.issue_date.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.sale_condition.label_tag }}</span>
+                        {% render_field form.sale_condition class="form-select rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.sale_condition.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.customer.label_tag }}</span>
+                        {% render_field form.customer class="form-select rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.customer.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.address.label_tag }}</span>
+                        {% render_field form.address class="form-control" readonly="true" %}
+                        <button type="button" class="btn btn-outline-secondary rounded-end" onclick="renderMap()">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <div class="invalid-feedback">
+                            {{ form.address.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                {% render_field form.lat class="visually-hidden" %}
+                {% render_field form.lng class="visually-hidden" %}
+            </div>
+
+            <div class="row gx-2 mt-2">
+                <div class="col-sm">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-borderless align-middle">
+                            <thead class="align-middle">
+                                <tr class="dark">
+                                    <td scope="col" class="text-center"></td>
+                                    <td scope="col" class="text-center" style="width: 60%;">Servicio</td>
+                                    <td scope="col" class="text-center">Cantidad</td>
+                                    <td scope="col" class="text-center">Unitario</td>
+                                    <td scope="col" class="text-center">Subtotal</td>
+                                </tr>
+                            </thead>
+                            <tbody id="services-table">
+                                {% for form in service_formset %}
+                                    <tr>
+                                        <td class="align-middle text-center">
+                                            {% if form.instance.id %}
+                                                <a href="{% url 'service_delete' model form.instance.id %}"
+                                                class="text-danger close" data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </a>
+                                            {% else %}
+                                                <i class="bi bi-x-circle text-muted"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% render_field form.service_type %}
+                                            <div class="invalid-feedback">
+                                                {{ form.service_type.errors|first }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% render_field form.amount %}
+                                            <div class="invalid-feedback">
+                                                {{ form.amount.errors|first }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% render_field form.unitario %}
+                                            <div class="invalid-feedback">
+                                                {{ form.unitario.errors|first }}
+                                            </div>
+                                        </td>
+                                        <td>{{ form.service_subtotal }}</td>
+                                        {{ form.id }}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2 justify-content-center mb-3">
+                <div class="col-auto">
+                    <a class="btn btn-outline-primary" onclick="addService()">
+                        <i class="bi bi-plus-lg me-2"></i>Agregar servicio
+                    </a>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.notes.label_tag }}</span>
+                        {% render_field form.notes class="form-control" rows="3" data-bs-toggle="tooltip" data-bs-title="Condiciones particulares de compra u otras aclaraciones." %}
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="input-group pb-2">
+                                <span class="input-group-text w-25">{{ form.subtotal.label_tag }}</span>
+                                {% render_field form.subtotal class="form-control text-center" readonly="true" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row gx-2">
+                        <label class="ms-2 text-muted pb-2">
+                            Impuestos
+                            <a class="plus" onclick="addTax()"
+                            data-bs-toggle="tooltip" data-bs-title="Agregar impuesto">
+                                <i class="bi bi-plus-circle ms-2"></i>
+                            </a>
+                        </label>
+                    </div>
+                    <div id="taxes-div">
+                        {% for form in taxes_formset %}
+                            <div class="row gx-2">
+                                <div class="input-group pb-2">
+                                    {% if form.instance.id %}
+                                        <a href="{% url 'tax_delete' model form.instance.id %}"
+                                        class="text-danger close align-self-center me-2" data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                                            <i class="bi bi-x-circle"></i>
+                                        </a>
+                                    {% else %}
+                                        <i class="bi bi-x-circle text-muted align-self-center me-2"></i>
+                                    {% endif %}
+                                    {% render_field form.tax_type %}
+                                    {% render_field form.tax_subtotal %}
+                                    {{ form.id }}
+                                    {% render_field form.budget class="visually-hidden" %}
+                                    {% render_field form.invoice class="visually-hidden" %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row gx-2">
+                        <div class="col-sm">
+                            <div class="input-group pb-2">
+                                <span class="input-group-text w-25">{{ form.total.label_tag }}</span>
+                                {% render_field form.total class="form-control text-center" readonly="true" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{ service_formset.management_form }}
+            {{ taxes_formset.management_form }}
+
+            <div id="empty-service-formset" class="visually-hidden">
+                {{ service_formset.empty_form }}
+            </div>
+            <div id="empty-taxes-formset" class="visually-hidden">
+                {{ taxes_formset.empty_form }}
+            </div>
+
+            <div class="row gx-2 pt-2">
+                {% include "go_back_button.html" %}
+                {% include "save_button.html" %}
+            </div>
+        </form>
+
+    {% endwith %}
+
+    <script src="{% static 'income/js/invoice_form.js' %}"></script>
+    <script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endblock card_body %}

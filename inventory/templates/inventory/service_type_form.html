@@ -1,0 +1,43 @@
+{% extends "card.html" %}
+{% load static widget_tweaks %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        {% if object %}
+            <h3 class="m-2 text-muted">Modificar servicio</h3>
+            <h3 class="m-2 text-muted">N&deg; {{ object.pk }}</h3>
+        {% else %}
+            <h3 class="m-2 text-muted">Nuevo servicio</h3>
+        {% endif %}
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% with WIDGET_ERROR_CLASS="is-invalid" %}
+        <form method="post" autocomplete="off" novalidate id="servicetype_form">
+            {% csrf_token %}
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.description.label_tag }}</span>
+                        {% render_field form.description class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.description.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center gx-2 pt-2">
+                {% include "go_back_button.html" %}
+                {% include "save_button.html" %}
+            </div>
+        </form>
+
+    {% endwith %}
+
+{% endblock card_body %}

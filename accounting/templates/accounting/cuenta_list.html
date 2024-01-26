@@ -1,0 +1,25 @@
+{% extends 'card.html' %}
+{% load static %}
+
+{% block card_body %}
+
+    {% for capitulo in capitulo_list %}
+        {{ capitulo }}<br>
+        {% for rubro in rubro_list %}
+            {% if rubro.capitulo == capitulo %}
+                - - {{ rubro }}<br>
+                {% for subrubro in subrubro_list %}
+                    {% if subrubro.rubro == rubro %}
+                        - - - - {{ subrubro }}<br>
+                        {% for cuenta in cuenta_list %}
+                            {% if cuenta.subrubro == subrubro %}
+                                - - - - - - {{ cuenta }}<br>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+{% endblock card_body %}

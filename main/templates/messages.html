@@ -1,0 +1,90 @@
+{% if messages %}
+    {% for message in messages %}
+        <div class="container-xxl">
+            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}
+            alert-dismissible fade show mt-1" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" aria-label="Close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if service_formset.errors %}
+    {% for form in service_formset %}
+        {% for error in form.non_field_errors %}
+            <div class="container-xxl">
+                <div class="alert alert-danger alert-dismissible fade show mt-1" role="alert">
+                    {{ error }}
+                    <button type="button" class="btn-close" aria-label="Close"
+                    data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endif %}
+
+{% if formset.non_form_errors %}
+    {% for error in formset.non_form_errors %}
+        <div class="container-xxl">
+            <div class="alert alert-danger alert-dismissible fade show mt-1"
+            role="alert">
+                {{ error }}
+                <button type="button" class="btn-close" aria-label="Close"
+                data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if service_formset.non_form_errors %}
+    {% for error in service_formset.non_form_errors %}
+        <div class="container-xxl">
+            <div class="alert alert-danger alert-dismissible fade show mt-1"
+            role="alert">
+                {{ error }}
+                <button type="button" class="btn-close" aria-label="Close"
+                data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if expenses_formset.non_form_errors %}
+    {% for error in expenses_formset.non_form_errors %}
+        <div class="container-xxl">
+            <div class="alert alert-danger alert-dismissible fade show mt-1"
+            role="alert">
+                {{ error }}
+                <button type="button" class="btn-close" aria-label="Close"
+                data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if taxes_formset.non_form_errors %}
+    {% for error in taxes_formset.non_form_errors %}
+        <div class="container-xxl">
+            <div class="alert alert-danger alert-dismissible fade show mt-1"
+            role="alert">
+                {{ error }}
+                <button type="button" class="btn-close" aria-label="Close"
+                data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if form.non_field_errors %}
+    {% for error in form.non_field_errors %}
+        <div class="container-xxl">
+            <div class="alert alert-danger alert-dismissible fade show mt-1"
+            role="alert">
+                {{ error }}
+                <button type="button" class="btn-close" aria-label="Close"
+                data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}

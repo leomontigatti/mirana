@@ -1,0 +1,42 @@
+{% extends "card.html" %}
+
+{% block card_body %}
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            {% if page_obj %}
+                <thead class="align-middle">
+                    <tr class="dark">
+                        <td scope="col" class="text-center">Número</td>
+                        <td scope="col">Proveedor</td>
+                        <td scope="col">Monto</td>
+                        <td scope="col">Fecha de emisión</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in page_obj %}
+                        <tr>
+                            <td class="text-center">
+                                <a href="{{ object.get_absolute_url }}" class="text-decoration-none">
+                                    {{ object.pk }}
+                                </a>
+                            </td>
+                            <td>{{ object.supplier }}</td>
+                            <td>$ {{ object.amount }}</td>
+                            <td>{{ object.issue_date|date:"SHORT_DATE_FORMAT" }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% else %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    Todavía no se creó un recibo de pago. Podés empezar haciendo click <a
+                    href="{% url 'purchasepayment_create' %}" class="text-decoration-none">acá</a>.
+                </p>
+            {% endif %}
+        </table>
+    </div>
+
+    {% include "pagination.html" %}
+
+{% endblock card_body %}

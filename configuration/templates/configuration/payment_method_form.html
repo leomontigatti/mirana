@@ -1,0 +1,48 @@
+{% extends "card.html" %}
+{% load widget_tweaks %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Nueva forma de pago</h3>
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% with WIDGET_ERROR_CLASS="is-invalid" %}
+        <form method="post" autocomplete="off" novalidate id="paymentmethod_form">
+            {% csrf_token %}
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.cuenta.label_tag }}</span>
+                        {% render_field form.cuenta class="form-select rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.cuenta.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.name.label_tag }}</span>
+                        {% render_field form.name class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.name.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2 pt-2">
+                {% include "go_back_button.html" %}
+                {% include "save_button.html" %}
+            </div>
+
+        </form>
+
+    {% endwith %}
+
+{% endblock card_body %}

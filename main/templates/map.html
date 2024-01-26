@@ -1,0 +1,30 @@
+{% include 'bootstrap.html' %}
+{% load static %}
+
+{% block content %}
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <div class="d-flex m-2">
+        <input type="text" name="address" id="address" class="form-control" placeholder="Buscar por domicilio" onFocus="geolocate()">
+        <input type="button" class="btn btn-outline-primary mx-2" onclick="saveLocation()" value="Guardar">
+        {% if object %}
+            <a href="{{ object.get_absolute_url }}" class="btn btn-outline-secondary me-1" role="button">
+                Volver
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="d-flex justify-content-center m-2">
+        <input type="text" name="lat" id="lat" value="{{ lat }}" class="visually-hidden">
+        <input type="text" name="lng" id="lng" value="{{ lng }}" class="visually-hidden">
+        <div id="map" style="height: 400px; width: 100%;"></div>
+    </div>
+
+    <script async
+    src="https://maps.googleapis.com/maps/api/js?key={{ maps_api_key }}&libraries=places&callback=initialize">
+    </script>
+
+    <script src="{% static 'main/js/map.js' %}"></script>
+
+{% endblock content %}

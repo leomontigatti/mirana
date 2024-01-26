@@ -1,0 +1,48 @@
+{% extends "card.html" %}
+{% load extra_tags %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Detalle forma de pago</h3>
+        <h3 class="m-2 text-muted">N&deg; {{ object.pk }}</h3>
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Cuenta</span>
+                <span class="form-control">{{ object.cuenta }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Nombre</span>
+                <span class="form-control">{{ object.name }}</span>
+            </div>
+        </div>
+        <div class="col-sm-2 pb-2 align-self-center">
+            <a href="{% url 'toggle_paymentmethod_is_active' object.pk %}" class="text-decoration-none m-2">
+                {% if object.is_active %}
+                    <i class="bi bi-toggle-on fs-5 text-primary align-middle"></i>
+                {% else %}
+                    <i class="bi bi-toggle-off fs-5 text-secondary align-middle"></i>
+                {% endif %}
+            </a>
+            <label>Activo</label>
+        </div>
+    </div>
+
+    <div class="row gx-2 pt-2">
+        <div class="col text-center">
+            <button type="button" onclick="javascript:history.back()" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-return-left me-2"></i>Volver
+            </button>
+        </div>
+    </div>
+
+{% endblock card_body %}

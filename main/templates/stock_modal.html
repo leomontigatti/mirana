@@ -1,0 +1,58 @@
+{% load widget_tweaks %}
+
+<div class="modal fade" id="authModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="fw-bold modal-title fs-5" id="authModalLabel">
+                    Modificar stock
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-start">
+                {% with WIDGET_ERROR_CLASS='is-invalid' %}
+                    <form method="post" autocomplete="off" novalidate id="stock_form">
+                        {% csrf_token %}
+                        <div class="input-group pb-2">
+                            <span class="input-group-text">{{ form.move_amount.label_tag }}</span>
+                            {% render_field form.move_amount %}
+                            <div class="invalid-feedback">
+                                {{ form.move_amount.errors|first }}
+                            </div>
+                        </div>
+                        <div class="input-group pb-2">
+                            <span class="input-group-text">{{ form.status.label_tag }}</span>
+                            {% render_field form.status %}
+                            <div class="invalid-feedback">
+                                {{ form.status.errors|first }}
+                            </div>
+                        </div>
+                        <div class="input-group pb-2">
+                            <span class="input-group-text">{{ form.reason.label_tag }}</span>
+                            {% render_field form.reason %}
+                            <div class="invalid-feedback">
+                                {{ form.reason.errors|first }}
+                            </div>
+                        </div>
+                        <div class="input-group pb-2">
+                            <span class="input-group-text">{{ form.password.label_tag }}</span>
+                            {% render_field form.password %}
+                            <div class="invalid-feedback">
+                                {{ form.password.errors|first }}
+                            </div>
+                        </div>
+                    </form>
+                {% endwith %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary me-1"
+                data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-outline-primary" form="stock_form">
+                    <i class="bi bi-check2 me-2"></i>Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

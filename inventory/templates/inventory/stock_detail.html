@@ -1,0 +1,92 @@
+{% extends "card.html" %}
+{% load static extra_tags %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Detalle de stock</h3>
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Producto</span>
+                <span class="form-control">{{ product|to_spanish|title }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Estado</span>
+                <span class="form-control">{{ status|upper|to_spanish|title }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Cantidad actual</span>
+                <span class="form-control d-flex justify-content-between">
+                    <span>{{ current }}</span>
+                    <span>
+                        <a class="text-decoration-none pencil"
+                        data-bs-toggle="tooltip" data-bs-title="Modificar" data-bs-placement="bottom">
+                            <i class="bi bi-pencil" data-bs-toggle="modal" data-bs-target="#authModal"></i>
+                        </a>
+                    </span>
+                </span>
+            </div>
+            {% include "stock_modal.html" %}
+        </div>
+    </div>
+
+    <div class="flex-grow-1 border-bottom mt-2"></div>
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Movimientos</h3>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            {% if movement_list.exists %}
+                <thead class="align-middle">
+                    <tr class="dark">
+                        <td scope="col">Fecha</td>
+                        <td scope="col">Comprobante o motivo</td>
+                        <td scope="col" class="text-center">Cantidad</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for movement in movement_list %}
+                        <tr>
+                            <td>{{ movement.create_date|date:"SHORT_DATE_FORMAT" }}</td>
+                            <td>
+                                {% if movement.task %}
+                                    <a href="{{ movement.task.get_absolute_url }}" class="text-decoration-none">
+                                        {{ movement.task }}
+                                    </a>
+                                {% elif movement.service %}
+                                    <a href="{{ movement.service.hiring.get_absolute_url }}" class="text-decoration-none">
+                                        Contratación N&deg; {{ movement.service.hiring.pk }}
+                                    </a>
+                                {% else %}
+                                    {{ movement.reason }}
+                                {% endif %}
+                            </td>
+                            <td class="text-center">{{ movement.amount }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% else %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    El producto no tiene movimientos.
+                </p>
+            {% endif %}
+        </table>
+    </div>
+
+    <script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endblock card_body %}

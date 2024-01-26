@@ -1,0 +1,78 @@
+{% extends 'card.html' %}
+
+{% block card_title %}
+
+<div class="d-flex py-3 justify-content-between">
+    <h3 class="m-2 text-muted">Detalle orden de compra</h3>
+    <h3 class="m-2 text-muted">N&deg; {{ object.id }}</h3>
+</div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    <div class="row gx-2 align-items-end">
+        <div class="col-sm">
+            <label class="m-2" for="id_issue_date">Fecha de emisión:</label>
+            <span class="fw-bold m-2">{{ object.issue_date|date:'SHORT_DATE_FORMAT' }}</span>
+        </div>
+        <div class="col-sm">
+            <label class="m-2" for="id_sale_condition">Condición de compra:</label>
+            <span class="fw-bold m-2">{{ object.get_sale_condition_display }}</span>
+        </div>
+    </div>
+    <div class="row gx-2 align-items-end">
+        <div class="col-sm">
+            <label class="m-2" for="id_supplier">Proveedor:</label>
+            <span class="fw-bold m-2">{{ object.supplier }}</span>
+        </div>
+    </div>
+
+    <div class="row gx-2 mt-3">
+        <div class="col-sm">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr class="dark">
+                            <td scope="col" class="text-center" style="width: 60%;">Producto o servicio</td>
+                            <td scope="col" class="text-center">Cantidad</td>
+                        </tr>
+                    </thead>
+                    <tbody id="service-table">
+                        {% for service in service_queryset %}
+                            <tr>
+                                <td>{{ service.description }}</td>
+                                <td class="text-center">{{ service.amount }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-4 mb-2">
+        <div class="col-sm">
+            <label class="m-2" for="id_notes">Notas:</label>
+            <span class="fw-bold m-2">
+                {% if object.notes %}
+                    {{ object.notes }}
+                {% else %}
+                    -
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    <div class="text-center pt-2">
+        <a href="{% url 'purchaseorder_list' %}" class="btn btn-outline-secondary me-1"
+        role="button">
+            <i class="bi bi-arrow-return-left me-2"></i>Volver
+        </a>
+        <a href="{% url 'purchaseorder_update' object.pk %}" class="btn btn-outline-primary me-1"
+        role="button">
+            Modificar
+        </a>
+    </div>
+
+{% endblock card_body %}

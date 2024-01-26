@@ -1,0 +1,126 @@
+{% extends 'card.html' %}
+{% load static widget_tweaks %}
+
+{% block card_title %}
+
+{% if object %}
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Modificar orden de compra</h3>
+        <h3 class="m-2 text-muted">N&deg; {{ object.id }}</h3>
+    </div>
+{% else %}
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">
+            Nueva orden de compra
+        </h3>
+    </div>
+{% endif %}
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+{% with WIDGET_ERROR_CLASS='is-invalid' %}
+    <form method="post" autocomplete="off" novalidate class="my-2" id="purchaseorder_form">
+        {% csrf_token %}
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.issue_date.label_tag }}
+                {% render_field form.issue_date class="form-control" %}
+                <div class="invalid-feedback">
+                    {{ form.issue_date.errors|first }}
+                </div>
+            </div>
+            <div class="col-sm">
+                {{ form.sale_condition.label_tag }}
+                {% render_field form.sale_condition class="form-select" %}
+                <div class="invalid-feedback">
+                    {{ form.sale_condition.errors|first }}
+                </div>
+            </div>
+        </div>
+        <div class="row gx-2">
+            <div class="col-sm">
+                {{ form.supplier.label_tag }}
+                {% render_field form.supplier class="form-select" %}
+                <div class="invalid-feedback">
+                    {{ form.supplier.errors|first }}
+                </div>
+            </div>
+        </div>
+
+        {% if service_formset %}
+            <div class="row gx-2 mt-3">
+                <div class="col-sm">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr class="dark align-middle">
+                                    <td scope="col" class="text-center" style="width: 60%;">Producto o servicio</td>
+                                    <td scope="col" class="text-center">Cantidad</td>
+                                    <td scope="col" class="text-center"></td>
+                                </tr>
+                            </thead>
+                            <tbody id="service-table">
+                                {% for form in service_formset %}
+                                    <tr>
+                                        <td>
+                                            {% render_field form.service_type class="form-control" %}
+                                            <div class="invalid-feedback">
+                                                {{ form.service_type.errors|first }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% render_field form.amount class="form-control text-center" %}
+                                            <div class="invalid-feedback">
+                                                {{ form.amount.errors|first }}
+                                            </div>
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            {% if form.instance.id %}
+                                                <a href="{% url 'service_delete' form.instance.id %}" class="text-danger close"
+                                                data-bs-toggle="tooltip" data-bs-title="Eliminar" data-bs-placement="bottom">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </a>
+                                            {% else %}
+                                                <i class="bi bi-x-circle text-muted"></i>
+                                            {% endif %}
+                                        </td>
+                                        {{ form.id }}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2 text-center justify-content-center m-2">
+                <div class="col-sm">
+                    <a class="btn btn-outline-primary" onclick="addService()">
+                        <i class="bi bi-plus-lg me-2"></i>Agregar línea
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="col-sm">
+            {{ form.notes.label_tag }}
+            {% render_field form.notes class="form-control" rows="4" placeholder="Condiciones particulares de compra u otras aclaraciones." %}
+        </div>
+
+        {{ service_formset.management_form }}
+
+        <div id="empty-formset" class="visually-hidden">
+            <table>
+                {{ service_formset.empty_form.as_table }}
+            </table>
+        </div>
+    </form>
+    {% include "buttons.html" %}
+{% endwith %}
+
+<script src="{% static 'income/js/form.js' %}"></script>
+<script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endblock card_body %}

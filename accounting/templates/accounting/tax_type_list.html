@@ -1,0 +1,36 @@
+{% extends "card.html" %}
+
+{% block card_body %}
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            {% if object_list %}
+                <thead class="align-middle">
+                    <tr class="dark">
+                        <td>Nombre</td>
+                        <td>Alícuota</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in object_list %}
+                        <tr>
+                            <td>{{ object.name }}</td>
+                            <td>
+                                <a href="{{ object.get_update_url }}" class="text-decoration-none">
+                                    {{ object.percentage }} %
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% else %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    Todavía no se creó un impuesto. Podés empezar haciendo click <a
+                    href="{% url 'taxtype_create' %}" class="text-decoration-none">acá</a>.
+                </p>
+            {% endif %}
+        </table>
+    </div>
+
+{% endblock card_body %}

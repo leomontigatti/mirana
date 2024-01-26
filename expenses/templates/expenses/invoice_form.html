@@ -1,0 +1,250 @@
+{% extends "card.html" %}
+{% load static widget_tweaks %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        {% if object %}
+            <h3 class="m-2 text-muted">Modificar factura de gastos</h3>
+            <h3 class="m-2 text-muted">N&deg; {{ object.pk }}</h3>
+        {% else %}
+            <h3 class="m-2 text-muted">Nueva factura de gastos</h3>
+        {% endif %}
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% with WIDGET_ERROR_CLASS="is-invalid" %}
+        <form method="post" autocomplete="off" novalidate id="expensesinvoice_form">
+            {% csrf_token %}
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.letter.label_tag }}</span>
+                        {% render_field form.letter class="form-select" %}
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.sales_point.label_tag }}</span>
+                        {% render_field form.sales_point class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.sales_point.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.number.label_tag }}</span>
+                        {% render_field form.number class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.number.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.issue_date.label_tag }}</span>
+                        {% render_field form.issue_date %}
+                        <div class="invalid-feedback">
+                            {{ form.issue_date.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.sale_condition.label_tag }}</span>
+                        {% render_field form.sale_condition class="form-select" %}
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.due_date.label_tag }}</span>
+                        {% render_field form.due_date %}
+                        <div class="invalid-feedback">
+                            {{ form.due_date.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.supplier.label_tag }}</span>
+                        {% render_field form.supplier class="form-select rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.supplier.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.cuenta_egreso.label_tag }}</span>
+                        {% render_field form.cuenta_egreso class="form-select rounded-end" data-bs-toggle="tooltip" data-bs-title="Seleccionar la cuenta contable relacionada al gasto." data-bs-placement="bottom" %}
+                        <div class="invalid-feedback">
+                            {{ form.cuenta_egreso.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2 mt-2">
+                <div class="col-sm">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-borderless align-middle">
+                            <thead class="align-middle">
+                                <tr class="dark">
+                                    <td scope="col" class="text-center"></td>
+                                    <td scope="col" class="text-center" style="width: 60%;">Descripción</td>
+                                    <td scope="col" class="text-center">Cantidad</td>
+                                    <td scope="col" class="text-center">Unitario</td>
+                                    <td scope="col" class="text-center">Subtotal</td>
+                                </tr>
+                            </thead>
+                            <tbody id="expenses-table">
+                                {% for form in expenses_formset %}
+                                    <tr>
+                                        <td class="align-middle text-center">
+                                            {% if form.instance.id and not forloop.first %}
+                                                <a href="{% url 'expense_delete' form.instance.id %}"
+                                                class="text-danger close" data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                                                    <i class="bi bi-x-circle"></i>
+                                                </a>
+                                            {% else %}
+                                                <i class="bi bi-x-circle text-muted"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% render_field form.description %}
+                                            <div class="invalid-feedback">
+                                                {{ form.description.errors|first }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% render_field form.amount %}
+                                            <div class="invalid-feedback">
+                                                {{ form.amount.errors|first }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {% render_field form.unitario %}
+                                            <div class="invalid-feedback">
+                                                {{ form.unitario.errors|first }}
+                                            </div>
+                                        </td>
+                                        <td>{{ form.expense_subtotal }}</td>
+                                        {{ form.id }}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2 justify-content-center mb-3">
+                <div class="col-auto">
+                    <a class="btn btn-outline-primary" onclick="addExpense()">
+                        <i class="bi bi-plus-lg me-2"></i>Agregar línea
+                    </a>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.notes.label_tag }}</span>
+                        {% render_field form.notes class="form-control" rows="3" placeholder="Condiciones particulares de compra u otras aclaraciones." %}
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="input-group pb-2">
+                                <span class="input-group-text w-25">{{ form.subtotal.label_tag }}</span>
+                                {% render_field form.subtotal class="form-control text-center" readonly="true" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row gx-2">
+                        <label class="ms-2 text-muted pb-2">
+                            Impuestos
+                            <a class="plus" onclick="addTax()"
+                            data-bs-toggle="tooltip" data-bs-title="Agregar impuesto">
+                                <i class="bi bi-plus-circle ms-2"></i>
+                            </a>
+                        </label>
+                    </div>
+                    <div id="taxes-div">
+                        {% for form in taxes_formset %}
+                            <div class="row gx-2">
+                                <div class="input-group pb-2">
+                                    {% if form.instance.id %}
+                                        <a href="{% url 'tax_delete' model form.instance.id %}"
+                                        class="text-danger close align-self-center me-2" data-bs-toggle="tooltip" data-bs-title="Eliminar">
+                                            <i class="bi bi-x-circle"></i>
+                                        </a>
+                                    {% else %}
+                                        <i class="bi bi-x-circle text-muted align-self-center me-2"></i>
+                                    {% endif %}
+                                    {% render_field form.tax_type %}
+                                    {% render_field form.tax_subtotal %}
+                                    {{ form.id }}
+                                    {% render_field form.invoice class="visually-hidden" %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="row gx-2">
+                        <div class="col-sm">
+                            <div class="input-group pb-2">
+                                <span class="input-group-text w-25">{{ form.total.label_tag }}</span>
+                                {% render_field form.total class="form-control text-center" readonly="true" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="input-group pb-2">
+                    <span class="input-group-text">{{ form.cae.label_tag }}</span>
+                    {% render_field form.cae class="form-control" %}
+                </div>
+            </div>
+
+            {{ expenses_formset.management_form }}
+            {{ taxes_formset.management_form }}
+
+            <div id="empty-expenses-formset" class="visually-hidden">
+                {{ expenses_formset.empty_form }}
+            </div>
+            <div id="empty-taxes-formset" class="visually-hidden">
+                {{ taxes_formset.empty_form }}
+            </div>
+
+            <div class="row gx-2 pt-2">
+                {% include "go_back_button.html" %}
+                {% if object %}
+                    {% include "auth_button.html" %}
+                {% else %}
+                    {% include "save_button.html" %}
+                {% endif %}
+            </div>
+        </form>
+    {% endwith %}
+
+    <script src="{% static 'expenses/js/invoice_form.js' %}"></script>
+    <script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endblock card_body %}

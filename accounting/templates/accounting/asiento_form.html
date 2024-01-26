@@ -1,0 +1,89 @@
+{% extends "card.html" %}
+{% load static widget_tweaks %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Nuevo asiento manual</h3>
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% with WIDGET_ERROR_CLASS="is-invalid" %}
+        <form method="post" novalidate id="asiento_form">
+            {% csrf_token %}
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">Fecha</span>
+                        <span class="form-control">{% now "SHORT_DATE_FORMAT" %}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-sm table-borderless align-middle">
+                    <thead class="align-middle">
+                        <tr class="dark">
+                            <td scope="col" class="text-center" style="width: 60%;">Cuenta</td>
+                            <td scope="col" class="text-center">Debe</td>
+                            <td scope="col" class="text-center">Haber</th>
+                        </tr>
+                    </thead>
+                    <tbody id="entries-table">
+                        {% for form in formset.forms %}
+                            <tr>
+                                <td>
+                                    {% render_field form.cuenta %}
+                                    <div class="invalid-feedback">
+                                        {{ form.cuenta.errors|first }}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% render_field form.debe %}
+                                    <div class="invalid-feedback">
+                                        {{ form.debe.errors|first }}
+                                    </div>
+                                </td>
+                                <td>
+                                    {% render_field form.haber %}
+                                    <div class="invalid-feedback">
+                                        {{ form.haber.errors|first }}
+                                    </div>
+                                </td>
+                                {{ form.asiento }}
+                                {{ form.id }}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row gx-2 justify-content-center mb-3">
+                <div class="col-auto">
+                    <a class="btn btn-outline-primary" onclick="addEntry()">
+                        <i class="bi bi-plus-lg me-2"></i>Agregar entrada
+                    </a>
+                </div>
+            </div>
+
+            {{ formset.management_form }}
+
+            <div id="empty-formset" class="visually-hidden">
+                {{ formset.empty_form }}
+            </div>
+
+            <div class="row gx-2 pt-2">
+                {% include "go_back_button.html" %}
+                {% include "save_button.html" %}
+            </div>
+        </form>
+
+    {% endwith %}
+
+    <script src="{% static 'accounting/js/asiento_form.js' %}"></script>
+
+{% endblock card_body %}

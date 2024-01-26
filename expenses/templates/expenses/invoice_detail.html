@@ -1,0 +1,189 @@
+{% extends "card.html" %}
+{% load static %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Detalle factura de gastos</h3>
+        <h3 class="m-2 text-muted">N&deg; {{ object.pk }}</h3>
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Fecha de emisión</span>
+                <span class="form-control">{{ object.issue_date|date:"SHORT_DATE_FORMAT" }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Condición de compra</span>
+                <span class="form-control">{{ object.get_sale_condition_display }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Fecha de vencimiento</span>
+                <span class="form-control">{{ object.due_date|date:"SHORT_DATE_FORMAT" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Número</span>
+                <span class="form-control">{{ object.letter }}-{{ object.sales_point }}-{{ object.number }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Cuenta de egreso</span>
+                <span class="form-control">{{ object.cuenta_egreso.name }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Situación frente al IVA</span>
+                <span class="form-control">{{ object.supplier.get_iva_situation_display }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Tipo de identificación</span>
+                <span class="form-control">{{ object.supplier.identification_type }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Número de identificación</span>
+                <span class="form-control">{{ object.supplier.identification_number }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Nombre o razón social</span>
+                <span class="form-control">
+                    <a href="{{ object.supplier.get_absolute_url }}" class="text-decoration-none">
+                        {{ object.supplier }}
+                    </a>
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Domicilio</span>
+                <span class="form-control rounded-end">{{ object.supplier.address }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2 mt-2">
+        <div class="col-sm">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead class="align-middle">
+                        <tr class="dark">
+                            <td scope="col" class="text-center" style="width: 60%;">Descripción</td>
+                            <td scope="col" class="text-center">Cantidad</td>
+                            <td scope="col" class="text-center">Unitario</td>
+                            <td scope="col" class="text-center">Subtotal</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for expense in expenses %}
+                            <tr>
+                                <td>{{ expense.description }}</td>
+                                <td class="text-center">{{ expense.amount }}</td>
+                                <td class="text-center">{{ expense.unitario }}</td>
+                                <td class="text-center">{{ expense.expense_subtotal }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2 h-100">
+                <span class="input-group-text">Notas</span>
+                <span class="form-control">
+                    {% if object.notes %}
+                        {{ object.notes }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="row">
+                <div class="input-group pb-2">
+                    <span class="input-group-text w-25">Subtotal</span>
+                    <span class="form-control text-center">$ {{ object.subtotal }}</span>
+                </div>
+            </div>
+            {% if taxes_queryset %}
+                <div class="row gx-2">
+                    <label class="ms-2 text-muted">Impuestos</label>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless mb-1">
+                        <tbody id="tax-table">
+                            {% for tax in taxes_queryset %}
+                                <tr>
+                                    <td class="w-25">{{ tax.tax_type }}</td>
+                                    <td class="text-center w-50">$ {{ tax.tax_subtotal }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+            <div class="row">
+                <div class="input-group pb-2">
+                    <span class="input-group-text w-25">Total</span>
+                    <span class="form-control text-center">$ {{ object.total }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Número de CAE</span>
+                <span class="form-control">
+                    {% if object.cae %}
+                        {{ object.cae }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2 pt-2">
+        {% include "go_back_button.html" %}
+        {% include "update_button.html" %}
+    </div>
+
+    <script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endblock card_body %}

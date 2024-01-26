@@ -1,0 +1,48 @@
+{% extends "card.html" %}
+
+{% block card_body %}
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            {% if page_obj %}
+                <thead class="align-middle">
+                    <tr class="dark">
+                        <td scope="col">Cuenta</td>
+                        <td scope="col">Nombre</td>
+                        <td scope="col" class="text-center">Activo</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in page_obj %}
+                        <tr>
+                            <td>{{ object.cuenta }}</td>
+                            <td>
+                                <a href="{{ object.get_absolute_url }}" class="text-decoration-none">
+                                    {{ object.name }}
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                <i
+                                {% if object.is_active %}
+                                    class="bi bi-check-circle-fill" style="color: var(--bs-success);"
+                                {% else %}
+                                    class="bi bi-x-circle-fill" style="color: var(--bs-danger);"
+                                {% endif %}
+                                ></i>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% else %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    Todavía no se creó una forma de pago. Podés empezar haciendo click <a
+                    href="{% url 'paymentmethod_create' %}" class="text-decoration-none">acá</a>.
+                </p>
+            {% endif %}
+        </table>
+    </div>
+
+{% include "pagination.html" %}
+
+{% endblock card_body %}

@@ -1,0 +1,116 @@
+{% extends "card.html" %}
+{% load static widget_tweaks %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        {% if object %}
+            <h3 class="m-2 text-muted">Modificar recibo de pago</h3>
+            <h3 class="m-2 text-muted">N&deg; {{ object.pk }}</h3>
+        {% else %}
+            <h3 class="m-2 text-muted">Nuevo recibo de pago</h3>
+        {% endif %}
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% with WIDGET_ERROR_CLASS="is-invalid" %}
+
+        {% if not object %}
+            <form method="get" autocomplete="off" novalidate>
+                <div class="row gx-2">
+                    <div class="col-sm">
+                        <div class="input-group pb-2">
+                            <span class="input-group-text">{{ form.invoice.label_tag }}</span>
+                            {% render_field form.invoice class="form-select" data-bs-toggle="tooltip" data-bs-title="Seleccionar si el pago se imputa a una factura de gastos." onchange="this.form.submit()" %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+
+        <form method="post" autocomplete="off" novalidate id="expensespayment_form">
+            {% csrf_token %}
+
+            {% if object %}
+                <div class="row gx-2">
+                    <div class="col-sm">
+                        <div class="input-group pb-2">
+                            <span class="input-group-text">{{ form.invoice.label_tag }}</span>
+                            {% render_field form.invoice class="form-select" data-bs-toggle="tooltip" data-bs-title="Seleccionar si el pago se imputa a una factura de gastos." %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.issue_date.label_tag }}</span>
+                        {% render_field form.issue_date %}
+                        <div class="invalid-feedback">
+                            {{ form.issue_date.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.supplier.label_tag }}</span>
+                        {% render_field form.supplier class="form-select rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.supplier.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.method.label_tag }}</span>
+                        {% render_field form.method class="form-select rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.method.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.amount.label_tag }}</span>
+                        {% render_field form.amount class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.amount.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.reference.label_tag }}</span>
+                        {% render_field form.reference class="form-control rounded-end" data-bs-toggle="tooltip" data-bs-title="Número de cheque, transferencia o depósito." data-bs-placement="bottom" %}
+                        <div class="invalid-feedback">
+                            {{ form.reference.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2 pt-2">
+                {% include "go_back_button.html" %}
+                {% if object %}
+                    {% include "auth_button.html" %}
+                {% else %}
+                    {% include "save_button.html" %}
+                {% endif %}
+            </div>
+        </form>
+
+    {% endwith %}
+
+    <script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endblock card_body %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static extra_tags %}
+
+{% block content %}
+
+    {% block card_title %}
+
+        <div class="d-flex py-3 justify-content-between">
+            <h3 class="m-2 text-muted">{{ model|to_spanish_plural }}</h3>
+            <div class="align-self-center">
+                {% if not user|is_operator and model != "stock" %}
+                    <a href="{% url model|add:'_create' %}" class="btn btn-outline-primary m-1">
+                        <i class="bi bi-plus-lg me-2"></i>Crear {{ model|to_spanish }}
+                    </a>
+                {% else %}
+                    <h3 class="m-2 text-muted">{{ search_date|date:"SHORT_DATE_FORMAT" }}</h3>
+                {% endif %}
+            </div>
+        </div>
+
+    {% endblock card_title %}
+
+    <div class="row">
+        <div class="col-sm">
+            {% if search_text %}
+                {% include "search_form.html" %}
+            {% elif model != "task" %}
+                <div class="flex-grow-1 border-bottom mb-3"></div>
+            {% endif %}
+
+            {% if search_input and not page_obj and not model == "stock" %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    No existen coincidencias para la búsqueda realizada.
+                    <a href="{% url model|add:'_list' %}" class="text-decoration-none">Limpiar búsqueda</a>.
+                </p>
+            {% elif filter_options and not page_obj and not model == "stock" %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-1"></i>
+                    No existen coincidencias para la búsqueda realizada.
+                    <span class="text-primary" name="clear-filters"
+                    onclick="clearFilters()">Limpiar filtros</span>.
+                </p>
+            {% else %}
+                {% block card_body %}
+                {% endblock card_body %}
+            {% endif %}
+        </div>
+
+        {% if filter_options %}
+            {% include "filters.html" %}
+        {% endif %}
+    </div>
+
+{% endblock content %}

@@ -1,0 +1,98 @@
+{% extends "card.html" %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Detalle recibo de cobro</h3>
+        <h3 class="m-2 text-muted">N&deg; {{ object.pk }}</h3>
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% if object.invoice %}
+        <div class="row gx-2">
+            <div class="col-sm">
+                <div class="input-group pb-2">
+                    <span class="input-group-text">Factura imputada</span>
+                    <span class="form-control">
+                        <a href="{{ object.invoice.get_absolute_url }}" class="text-decoration-none">
+                            {{ object.invoice }}
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Fecha de emisión</span>
+                <span class="form-control">{{ object.issue_date|date:"SHORT_DATE_FORMAT" }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Cliente</span>
+                <span class="form-control">
+                    {% if object.customer %}
+                        <a href="{{ object.customer.get_absolute_url }}" class="text-decoration-none">
+                            {{ object.customer }}
+                        </a>
+                    {% else %}
+                        -
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Forma de pago</span>
+                <span class="form-control">{{ object.method }}</span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Cobrador</span>
+                <span class="form-control">{{ object.collector }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Referencia</span>
+                <span class="form-control">
+                    {% if object.reference %}
+                        {{ object.reference }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Monto</span>
+                <span class="form-control">$ {{ object.amount }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-2 pt-2">
+        {% include "go_back_button.html" %}
+        <div class="col-auto">
+            <a href="#" target="_blank" class="btn btn-outline-success disabled" role="button">
+                <i class="bi bi-whatsapp me-2"></i>Enviar
+            </a>
+        </div>
+        {% include "update_button.html" %}
+    </div>
+
+{% endblock card_body %}

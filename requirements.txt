@@ -1,0 +1,11 @@
+django
+python-decouple
+wheel
+pillow
+django-cleanup
+celery
+celery[redis]
+django-celery-results
+django-widget-tweaks
+requests
+xhtml2pdf

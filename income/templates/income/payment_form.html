@@ -1,0 +1,130 @@
+{% extends "card.html" %}
+{% load static widget_tweaks extra_tags %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        {% if object %}
+            <h3 class="m-2 text-muted">Modificar recibo de cobro</h3>
+            <h3 class="m-2 text-muted">N&deg; {{ object.pk }}</h3>
+        {% else %}
+            <h3 class="m-2 text-muted">Nuevo recibo de cobro</h3>
+        {% endif %}
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% with WIDGET_ERROR_CLASS="is-invalid" %}
+        {% if not user|is_operator and not object.invoice %}
+            <form method="get" autocomplete="off" novalidate>
+                <div class="row gx-2">
+                    <div class="col-sm">
+                        <div class="input-group pb-2">
+                            <span class="input-group-text">{{ form.invoice.label_tag }}</span>
+                            {% render_field form.invoice class="form-select" onchange="this.form.submit()" data-bs-toggle="tooltip" data-bs-title="Seleccionar si el pago se imputa a una factura de venta." %}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+
+        <form method="post" autocomplete="off" novalidate id="incomepayment_form">
+            {% csrf_token %}
+
+            {% render_field form.invoice class="visually-hidden" %}
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.issue_date.label_tag }}</span>
+                        {% if not user|is_operator %}
+                            {% render_field form.issue_date %}
+                            <div class="invalid-feedback">
+                                {{ form.issue_date.errors|first }}
+                            </div>
+                        {% else %}
+                            {% render_field form.issue_date class="form-control" readonly="true" %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.customer.label_tag }}</span>
+                        {% if not user|is_operator %}
+                            {% render_field form.customer class="form-select rounded-end" %}
+                            <div class="invalid-feedback">
+                                {{ form.customer.errors|first }}
+                            </div>
+                        {% else %}
+                            {% render_field form.customer class="form-select" readonly="true" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.method.label_tag }}</span>
+                        {% if not user|is_operator  %}
+                            {% render_field form.method class="form-select rounded-end" %}
+                            <div class="invalid-feedback">
+                                {{ form.method.errors|first }}
+                            </div>
+                        {% else %}
+                            {% render_field form.method class="visually-hidden" readonly="true" %}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.collector.label_tag }}</span>
+                        {% if not user|is_operator  %}
+                            {% render_field form.collector class="form-select rounded-end" %}
+                            <div class="invalid-feedback">
+                                {{ form.collector.errors|first }}
+                            </div>
+                        {% else %}
+                            {% render_field form.collector class="visually-hidden" readonly="true" %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.reference.label_tag }}</span>
+                        {% render_field form.reference class="form-control rounded-end" data-bs-toggle="tooltip" data-bs-title="Número de cheque, transferencia o depósito." data-bs-placement="bottom" %}
+                        <div class="invalid-feedback">
+                            {{ form.reference.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.amount.label_tag }}</span>
+                        {% render_field form.amount class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.amount.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2 pt-2">
+                {% include "go_back_button.html" %}
+                {% if object %}
+                    {% include "auth_button.html" %}
+                {% else %}
+                    {% include "save_button.html" %}
+                {% endif %}
+            </div>
+        </form>
+
+    {% endwith %}
+
+    <script src="{% static 'main/js/tooltips.js' %}"></script>
+
+{% endblock card_body %}

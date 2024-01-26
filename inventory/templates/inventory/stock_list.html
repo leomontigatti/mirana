@@ -1,0 +1,42 @@
+{% extends "card.html" %}
+{% load extra_tags %}
+
+{% block card_body %}
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead class="align-middle">
+                <tr class="dark">
+                    <td scope="col">Producto</td>
+                    <td scope="col">Estado</td>
+                    <td scope="col" class="text-center">Stock</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for status, stock in bathrooms.items %}
+                    <tr>
+                        <td>Baño</td>
+                        <td>
+                            <a href="{% url 'stock_detail' 'bathroom' status|lower %}" class="text-decoration-none">
+                                {{ status|to_spanish|title }}
+                            </a>
+                        </td>
+                        <td class="text-center">{{ stock }}</td>
+                    </tr>
+                {% endfor %}
+                {% for status, stock in workshops.items %}
+                    <tr>
+                        <td>Obrador</td>
+                        <td>
+                            <a href="{% url 'stock_detail' 'workshop' status|lower %}" class="text-decoration-none">
+                                {{ status|to_spanish|title }}
+                            </a>
+                        </td>
+                        <td class="text-center">{{ stock }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock card_body %}

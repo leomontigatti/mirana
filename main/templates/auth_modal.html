@@ -1,0 +1,31 @@
+{% load extra_tags %}
+
+<div class="modal fade" id="authModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="fw-bold modal-title fs-5" id="authModalLabel">
+                    Modificar {{ model|to_spanish }}
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-start">
+                <p class="mx-2">Para modificar un{% if model == "salesinvoice" %}a{% endif %} {{ model|to_spanish }} es necesario volver a identificarse.</p>
+
+                <div class="input-group pb-2">
+                    <span class="input-group-text">Contraseña</span>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary me-1"
+                data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-outline-primary" form="{{ model }}_form">
+                    <i class="bi bi-check2 me-2"></i>Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

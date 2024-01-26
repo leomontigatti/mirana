@@ -1,0 +1,151 @@
+{% extends "card.html" %}
+{% load widget_tweaks %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Detalle operario</h3>
+        <div class="align-self-center">
+            <button type="button" class="btn btn-outline-primary"
+            data-bs-toggle="modal" data-bs-target="#passwordModal">
+                <i class="bi bi-key me-2"></i>Modificar contraseña
+            </button>
+
+            <div class="modal fade" id="passwordModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="fw-bold modal-title fs-5" id="createModalLabel">
+                                Modificar contraseña
+                            </h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <form method="post" action="{% url 'operator_password_change' object.pk %}" novalidate>
+                            <div class="modal-body">
+                                {% csrf_token %}
+
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="input-group pb-2">
+                                            <span class="input-group-text">{{ form.new_password1.label_tag }}</span>
+                                            {% render_field form.new_password1 class="form-control" %}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-sm">
+                                        <div class="input-group pb-2">
+                                            <span class="input-group-text fw-bold">Repetir contraseña</span>
+                                            {% render_field form.new_password2 class="form-control" %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary me-1"
+                                data-bs-dismiss="modal">
+                                    Cancelar
+                                </button>
+                                <button type="submit" class="btn btn-outline-primary">
+                                    <i class="bi bi-check2 me-2"></i>Confirmar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    <div class="row gx-2">
+        <div class="col-sm">
+            <div class="input-group pb-2">
+                <span class="input-group-text">Nombre y apellido</span>
+                <span class="form-control">{{ object.user.first_name }} {{ object.user.last_name }}</span>
+            </div>
+        </div>
+        <div class="col-sm-2 pb-2 align-self-center">
+            <a href="{% url 'toggle_operator_is_active' object.pk %}" class="text-decoration-none m-2">
+                {% if object.user.is_active %}
+                    <i class="bi bi-toggle-on fs-5 text-primary align-middle"></i>
+                {% else %}
+                    <i class="bi bi-toggle-off fs-5 text-secondary align-middle"></i>
+                {% endif %}
+            </a>
+            <label>Activo</label>
+        </div>
+    </div>
+
+    <div class="row gx-2 pt-2">
+        {% include "go_back_button.html" %}
+        <div class="col">
+            <a href="{% url 'task_create' object.pk %}" class="btn btn-outline-primary me-1"
+            role="button">
+                <i class="bi bi-plus-lg me-2"></i>Crear tarea
+            </a>
+        </div>
+    </div>
+
+    <div class="flex-grow-1 border-bottom mt-3"></div>
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Tareas asignadas</h3>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            {% if page_obj %}
+                <thead class="align-middle">
+                    <tr class="dark">
+                        <td scope="col">Fecha</td>
+                        <td scope="col">Descripción</td>
+                        <td scope="col">Contratación</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in page_obj %}
+                        <tr
+                        {% if object.is_done %}
+                            class="table-success"
+                        {% elif object.priority == 2 %}
+                            class="table-warning"
+                        {% elif object.priority == 3 %}
+                            class="table-danger"
+                        {% endif %}
+                        >
+                            <td>{{ object.start_date|date:"SHORT_DATE_FORMAT" }}</td>
+                            <td>
+                                <a href="{{ object.get_absolute_url }}" class="text-decoration-none">
+                                    {{ object }}
+                                </a>
+                            </td>
+                            <td>
+                                {% if object.hiring %}
+                                    {{ object.hiring }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% else %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    El operario no tiene tareas asignadas. Podés empezar haciendo click <a
+                    href="{% url 'task_create' object.pk %}" class="text-decoration-none">acá</a>.
+                </p>
+            {% endif %}
+        </table>
+    </div>
+
+    {% include "pagination.html" %}
+
+{% endblock card_body %}

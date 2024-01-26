@@ -1,0 +1,101 @@
+.eye:hover .bi-eye:before {
+    content: "\F33E";
+}
+
+.plus:hover .bi-plus-circle:before {
+    content: "\F4F9";
+    cursor: pointer;
+}
+
+.pencil:hover .bi-pencil:before {
+    content: "\F4C9";
+}
+
+.geo:hover .bi-geo-alt:before {
+    content: "\F3E7";
+}
+
+.delete:hover .bi-trash3:before {
+    content: "\F78A";
+}
+
+.check:hover .bi-check-circle:before {
+    content: "\F26A";
+}
+
+.close:hover .bi-x-circle:before {
+    content: "\F622";
+}
+
+.whatsapp {
+    color: #25D366;
+}
+
+.whatsapp:hover .bi-whatsapp:before {
+    color: var(--bs-success) !important;
+}
+
+.bi-exclamation-circle {
+    color: var(--bs-warning);
+}
+
+[readonly] {
+    background-color: #FFFFFF;
+    pointer-events: none;
+}
+
+.no-input {
+    font-family: inherit;
+    font-size: inherit;
+    padding: none;
+    width: inherit;
+    background-color: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+}
+
+tr.dark {
+    background-color: #212529;
+    color: #FFFFFF8C;
+}
+
+form.filters-form {
+    background-color: rgba(0, 0, 0, 0.05);
+    font-size: .8rem;
+}
+
+form.filters-form ul {
+    list-style: none;
+    padding: 0rem;
+}
+
+form.filters-form li {
+    margin: 0rem;
+}
+
+.selected {
+    color: black !important;
+    border-left: 1rem;
+    border-color: #212529;
+    border-left-width: 1rem;
+}
+
+.selected:hover {
+    cursor: default !important;
+}
+
+form.filters-form li:hover {
+    cursor: pointer;
+    color: black !important;
+}
+
+span[name="clear-filters"]:hover {
+    cursor: pointer;
+}
+
+.alert {
+    margin-bottom: 0 !important;
+}
+
+/* body {
+    background-color: blue !important;
+} */

@@ -1,0 +1,77 @@
+{% extends "card.html" %}
+{% load widget_tweaks %}
+
+{% block card_title %}
+
+    <div class="d-flex py-3 justify-content-between">
+        <h3 class="m-2 text-muted">Nuevo operario</h3>
+    </div>
+
+{% endblock card_title %}
+
+{% block card_body %}
+
+    {% with WIDGET_ERROR_CLASS="is-invalid" %}
+        <form method="post" autocomplete="off" novalidate id="operator_form">
+            {% csrf_token %}
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.username.label_tag }}</span>
+                        {% render_field form.username class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.username.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.password1.label_tag }}</span>
+                        {% render_field form.password1 class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.password1.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text fw-bold">Repetir contraseña</span>
+                        {% render_field form.password2 class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.password2.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row gx-2">
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.first_name.label_tag }}</span>
+                        {% render_field form.first_name class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.first_name.errors|first }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="input-group pb-2">
+                        <span class="input-group-text">{{ form.last_name.label_tag }}</span>
+                        {% render_field form.last_name class="form-control rounded-end" %}
+                        <div class="invalid-feedback">
+                            {{ form.last_name.errors|first }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center gx-2 pt-2">
+                {% include "go_back_button.html" %}
+                {% include "save_button.html" %}
+            </div>
+        </form>
+
+    {% endwith %}
+
+{% endblock card_body %}

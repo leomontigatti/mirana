@@ -1,0 +1,48 @@
+{% extends "card.html" %}
+
+{% block card_body %}
+
+<div class="table-responsive">
+    <table class="table align-middle">
+        {% if object_list %}
+            <thead class="align-middle">
+                <tr class="dark">
+                    <td scope="col">Cuenta</td>
+                    <td scope="col" class="text-center">Debe</td>
+                    <td scope="col" class="text-center">Haber</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asiento in object_list %}
+                <tr>
+                    <td colspan="4" class="text-center table-secondary">
+                        Asiento N&deg;{{ asiento.id }} - {{ asiento.create_date|date:"SHORT_DATE_FORMAT" }}
+                    </td>
+                </tr>
+                    {% for entry in asiento.entries.all %}
+
+                        <tr>
+                            <td>
+                                {{ entry.cuenta }}
+                            </td>
+                            <td class="text-center">
+                                {% if entry.debe %}{{ entry.debe }}{% else %}{% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if entry.haber %}{{ entry.haber }}{% else %}{% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        {% else %}
+            <p class="m-2">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                Todavía no se creó un asiento. Podés empezar haciendo click <a
+                href="{% url 'asiento_create' %}" class="text-decoration-none">acá</a>.
+            </p>
+        {% endif %}
+    </table>
+</div>
+
+{% endblock card_body %}

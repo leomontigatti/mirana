@@ -1,0 +1,34 @@
+{% load static extra_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        {% include 'bootstrap.html' %}
+
+        <style>
+            @page {
+                margin-top: 20px;
+                margin-bottom: 20px;
+                margin-left: 20px;
+                margin-right: 20px;
+            }
+        </style>
+
+        <title>Bulldog Servicios | {{ app|to_spanish|title }}</title>
+
+        <link rel="icon" type="image/x-icon" href="{% static 'main/images/bulldog.png' %}">
+
+    </head>
+
+    <body>
+
+        <h1>{{ object }}</h1>
+
+    </body>
+
+</html>

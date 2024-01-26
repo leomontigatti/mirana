@@ -1,0 +1,42 @@
+{% extends "card.html" %}
+
+{% block card_body %}
+
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            {% if page_obj %}
+                <thead class="align-middle">
+                    <tr class="dark">
+                        <td scope="col" class="text-center">Número</td>
+                        <td scope="col">Nombre o razón social</td>
+                        <td scope="col">Tipo y número de ID</td>
+                        <td scope="col">Domicilio</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for object in page_obj %}
+                        <tr>
+                            <td class="text-center">{{ object.pk }}</td>
+                            <td>
+                                <a href="{{ object.get_absolute_url }}" class="text-decoration-none">
+                                    {{ object.name }}
+                                </a>
+                            </td>
+                            <td>{{ object.identification_type }} {{ object.identification_number }}</td>
+                            <td>{{ object.address }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            {% else %}
+                <p class="m-2">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    Todavía no se creó un cliente. Podés empezar haciendo click <a
+                    href="{% url 'customer_create' %}" class="text-decoration-none">acá</a>.
+                </p>
+            {% endif %}
+        </table>
+    </div>
+
+    {% include "pagination.html" %}
+
+{% endblock card_body %}
